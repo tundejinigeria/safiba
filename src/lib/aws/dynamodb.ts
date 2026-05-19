@@ -15,7 +15,7 @@ import { fromNodeProviderChain } from '@aws-sdk/credential-providers';
 
 // Create client with credential refresh for temporary credentials
 const client = new DynamoDBClient({
-  region: process.env.AWS_REGION ?? 'us-east-1',
+  region: process.env.REGION ?? 'us-east-1',
   // Enable credential refresh for temporary tokens
   credentials: fromNodeProviderChain({
     // Refresh credentials 5 minutes before expiration (default is 15 mins)

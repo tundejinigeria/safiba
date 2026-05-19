@@ -7,7 +7,7 @@ import {
 import { createHmac } from 'crypto';
 
 export const cognitoClient = new CognitoIdentityProviderClient({
-  region: process.env.AWS_REGION ?? 'us-east-1',
+  region: process.env.REGION ?? 'us-east-1',
 });
 
 export const COGNITO_CLIENT_ID =
