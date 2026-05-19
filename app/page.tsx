@@ -1,6 +1,20 @@
 import Link from "next/link";
+import {
+  Bell,
+  Search,
+  AlertTriangle,
+  ShieldCheck,
+  Users,
+  Map,
+  Wifi,
+  Globe,
+  EyeOff,
+  Building2,
+  ArrowRight,
+} from "lucide-react";
+import WaitlistForm from "@/src/components/WaitlistForm";
 
-/* ── Nav ──────────────────────────────────────────────────────────────────── */
+/* Nav */
 
 function Nav() {
   return (
@@ -23,12 +37,11 @@ function Nav() {
   );
 }
 
-/* ── Hero ─────────────────────────────────────────────────────────────────── */
+/* Hero */
 
 function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col justify-end px-5 pb-14 pt-28 sm:px-8 sm:pb-20 overflow-hidden">
-      {/* Background grid — subtle map-like texture */}
       <div
         className="absolute inset-0 opacity-[0.04]"
         style={{
@@ -38,7 +51,7 @@ function Hero() {
         }}
       />
 
-      {/* Pulsing alert dot — top right */}
+      {/* Live indicator */}
       <div className="absolute top-24 right-8 sm:top-28 sm:right-16 flex items-center gap-2">
         <span className="relative flex h-2.5 w-2.5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
@@ -66,7 +79,7 @@ function Hero() {
             className="inline-flex items-center justify-center gap-2 bg-white text-black px-8 py-3.5 text-sm font-medium hover:bg-neutral-200 transition-colors"
           >
             Join the Waitlist
-            <span>→</span>
+            <ArrowRight size={14} />
           </a>
           <a
             href="#how-it-works"
@@ -80,35 +93,21 @@ function Hero() {
   );
 }
 
-/* ── Problem ──────────────────────────────────────────────────────────────── */
+/* ── Problem */
 
 function Problem() {
   return (
     <section className="border-t border-neutral-900 px-5 py-16 sm:px-8 sm:py-24">
       <div className="max-w-6xl">
-        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">
-          The Problem
-        </p>
+        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">The Problem</p>
         <h2 className="text-[clamp(1.8rem,5vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-white max-w-3xl">
           Safety information in Nigeria is broken.
         </h2>
         <div className="mt-12 grid grid-cols-1 gap-px bg-neutral-900 sm:grid-cols-3">
           {[
-            {
-              stat: "Hours",
-              label: "after incidents",
-              desc: "News channels report long after events unfold — when it's already too late to act.",
-            },
-            {
-              stat: "Rumours",
-              label: "not facts",
-              desc: "WhatsApp groups spread unverified information that causes panic and confusion.",
-            },
-            {
-              stat: "Unanswered",
-              label: "emergency lines",
-              desc: "Police emergency numbers go unanswered when Nigerians need help the most.",
-            },
+            { stat: "Hours", label: "after incidents", desc: "News channels report long after events unfold — when it's already too late to act." },
+            { stat: "Rumours", label: "not facts", desc: "WhatsApp groups spread unverified information that causes panic and confusion." },
+            { stat: "Unanswered", label: "emergency lines", desc: "Police emergency numbers go unanswered when Nigerians need help the most." },
           ].map(({ stat, label, desc }) => (
             <div key={stat} className="bg-black p-7 sm:p-8">
               <p className="text-3xl sm:text-4xl font-semibold text-white mb-1">{stat}</p>
@@ -122,15 +121,36 @@ function Problem() {
   );
 }
 
-/* ── Solution ─────────────────────────────────────────────────────────────── */
+/* ── Solution */
+
+const solutionFeatures = [
+  {
+    icon: Bell,
+    title: "Real-time Alerts",
+    desc: "Verified incident reports from your community, seconds after they happen.",
+  },
+  {
+    icon: Search,
+    title: "Missing Persons",
+    desc: "Coordinated search network with photo sharing and last-seen location tracking.",
+  },
+  {
+    icon: AlertTriangle,
+    title: "SOS",
+    desc: "One-tap emergency broadcast to your trusted circle and nearby responders.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Trust-scored Data",
+    desc: "Every report is scored for credibility. No more rumours masquerading as facts.",
+  },
+];
 
 function Solution() {
   return (
     <section className="border-t border-neutral-900 px-5 py-16 sm:px-8 sm:py-24">
       <div className="max-w-6xl">
-        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">
-          The Solution
-        </p>
+        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">The Solution</p>
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
           <div>
             <h2 className="text-[clamp(1.8rem,4vw,3.5rem)] font-semibold leading-[0.95] tracking-tight text-white">
@@ -144,14 +164,9 @@ function Solution() {
             </p>
           </div>
           <div className="flex flex-col gap-4">
-            {[
-              { icon: "🔴", title: "Real-time Alerts", desc: "Verified incident reports from your community, seconds after they happen." },
-              { icon: "🔍", title: "Missing Persons", desc: "Coordinated search network with photo sharing and last-seen location tracking." },
-              { icon: "🆘", title: "SOS", desc: "One-tap emergency broadcast to your trusted circle and nearby responders." },
-              { icon: "✅", title: "Trust-scored Data", desc: "Every report is scored for credibility. No more rumours masquerading as facts." },
-            ].map(({ icon, title, desc }) => (
+            {solutionFeatures.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="flex gap-4 border border-neutral-800 p-5 hover:border-neutral-700 transition-colors">
-                <span className="text-xl shrink-0 mt-0.5">{icon}</span>
+                <Icon size={18} className="shrink-0 mt-0.5 text-neutral-400" />
                 <div>
                   <p className="text-sm font-semibold text-white mb-1">{title}</p>
                   <p className="text-sm text-neutral-500 leading-relaxed">{desc}</p>
@@ -165,53 +180,32 @@ function Solution() {
   );
 }
 
-/* ── Features ─────────────────────────────────────────────────────────────── */
+/* ── Features  */
+
+const featureList = [
+  { number: "01", icon: Users, title: "Verified Communities", desc: "Join location-based safety groups verified by community leaders. No anonymous trolls." },
+  { number: "02", icon: Map, title: "Incident Heatmaps", desc: "See where incidents are clustering in real time. Know which routes to avoid." },
+  { number: "03", icon: Wifi, title: "Offline-first", desc: "Core features work on low bandwidth. Designed for Nigerian network realities." },
+  { number: "04", icon: Globe, title: "Multi-language", desc: "English, Pidgin, Yoruba, Igbo, Hausa. Safety information in your language." },
+  { number: "05", icon: EyeOff, title: "Anonymous Reporting", desc: "Report sensitive incidents without revealing your identity. Your safety first." },
+  { number: "06", icon: Building2, title: "Authority Integration", desc: "Direct escalation to verified police, FRSC, and emergency services channels." },
+];
 
 function Features() {
   return (
     <section id="features" className="border-t border-neutral-900 px-5 py-16 sm:px-8 sm:py-24">
       <div className="max-w-6xl">
-        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">
-          Features
-        </p>
+        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">Features</p>
         <h2 className="text-[clamp(1.8rem,4vw,3.5rem)] font-semibold leading-[0.95] tracking-tight text-white mb-14">
           Built for how Nigerians<br />actually communicate.
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              number: "01",
-              title: "Verified Communities",
-              desc: "Join location-based safety groups verified by community leaders. No anonymous trolls.",
-            },
-            {
-              number: "02",
-              title: "Incident Heatmaps",
-              desc: "See where incidents are clustering in real time. Know which routes to avoid.",
-            },
-            {
-              number: "03",
-              title: "Offline-first",
-              desc: "Core features work on low bandwidth. Designed for Nigerian network realities.",
-            },
-            {
-              number: "04",
-              title: "Multi-language",
-              desc: "English, Pidgin, Yoruba, Igbo, Hausa. Safety information in your language.",
-            },
-            {
-              number: "05",
-              title: "Anonymous Reporting",
-              desc: "Report sensitive incidents without revealing your identity. Your safety first.",
-            },
-            {
-              number: "06",
-              title: "Authority Integration",
-              desc: "Direct escalation to verified police, FRSC, and emergency services channels.",
-            },
-          ].map(({ number, title, desc }) => (
+          {featureList.map(({ number, icon: Icon, title, desc }) => (
             <div key={number} className="border border-neutral-800 p-6 hover:border-neutral-700 transition-colors">
-              <p className="text-xs text-neutral-600 font-mono mb-4">{number}</p>
+              <div className="flex items-center gap-3 mb-4">
+                <Icon size={16} className="text-neutral-500" />
+                <p className="text-xs text-neutral-600 font-mono">{number}</p>
+              </div>
               <h3 className="text-base font-semibold text-white mb-2">{title}</h3>
               <p className="text-sm text-neutral-500 leading-relaxed">{desc}</p>
             </div>
@@ -222,15 +216,13 @@ function Features() {
   );
 }
 
-/* ── How it works ─────────────────────────────────────────────────────────── */
+/* How it works */
 
 function HowItWorks() {
   return (
     <section id="how-it-works" className="border-t border-neutral-900 px-5 py-16 sm:px-8 sm:py-24">
       <div className="max-w-6xl">
-        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">
-          How it works
-        </p>
+        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">How it works</p>
         <h2 className="text-[clamp(1.8rem,4vw,3.5rem)] font-semibold leading-[0.95] tracking-tight text-white mb-14">
           Simple. Fast. Trusted.
         </h2>
@@ -253,7 +245,7 @@ function HowItWorks() {
   );
 }
 
-/* ── Stats ────────────────────────────────────────────────────────────────── */
+/*  Stats */
 
 function Stats() {
   return (
@@ -277,15 +269,13 @@ function Stats() {
   );
 }
 
-/* ── Waitlist ─────────────────────────────────────────────────────────────── */
+/* Waitlist  */
 
 function Waitlist() {
   return (
     <section id="waitlist" className="border-t border-neutral-900 px-5 py-16 sm:px-8 sm:py-24">
       <div className="max-w-2xl">
-        <p className="mb-4 text-xs tracking-[0.3em] uppercase text-neutral-500">
-          Early Access
-        </p>
+        <p className="mb-4 text-xs tracking-[0.3em] uppercase text-neutral-500">Early Access</p>
         <h2 className="text-[clamp(2rem,5vw,4rem)] font-semibold leading-[0.95] tracking-tight text-white mb-6">
           Be first to know<br />
           <em className="not-italic text-neutral-500">when we launch.</em>
@@ -294,28 +284,13 @@ function Waitlist() {
           We're building in public. Join the waitlist and help shape Nigeria's
           first community-powered safety platform.
         </p>
-        <form className="flex flex-col sm:flex-row gap-3">
-          <input
-            type="email"
-            placeholder="your@email.com"
-            className="flex-1 bg-neutral-900 border border-neutral-800 px-4 py-3 text-sm text-white placeholder-neutral-600 outline-none focus:border-neutral-600 transition-colors"
-          />
-          <button
-            type="submit"
-            className="bg-white text-black px-8 py-3 text-sm font-medium hover:bg-neutral-200 transition-colors shrink-0"
-          >
-            Join Waitlist
-          </button>
-        </form>
-        <p className="mt-4 text-xs text-neutral-600">
-          No spam. No noise. Just the launch date and early access.
-        </p>
+        <WaitlistForm />
       </div>
     </section>
   );
 }
 
-/* ── Footer ───────────────────────────────────────────────────────────────── */
+/* Footer */
 
 function Footer() {
   return (
@@ -334,7 +309,7 @@ function Footer() {
   );
 }
 
-/* ── Page ─────────────────────────────────────────────────────────────────── */
+/*  Page  */
 
 export default function Home() {
   return (

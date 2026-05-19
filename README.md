@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Safiba — Nigeria's Safety Intelligence Platform
 
-## Getting Started
+Landing page + admin portal built with Next.js 16, Tailwind CSS, AWS DynamoDB, and AWS Cognito.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## AWS Setup
+
+### 1. DynamoDB — Waitlist table
+
+Create a table in the AWS Console (or via CLI):
+
+```
+Table name:   safiba-waitlist
+Partition key: pk (String)
+Sort key:      sk (String)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+No secondary indexes needed for the waitlist. Billing mode: On-demand.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Cognito — Admin User Pool
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Go to AWS Console → Cognito → Create User Pool
+2. Sign-in options: **Email**
+3. App client:
+   - App type: **Public client**
+   - Auth flows: enable **ALLOW_USER_PASSWORD_AUTH**
+   - No client secret (public client)
+4. Copy the **App client ID** → set as `COGNITO_USER_POOL_CLIENT_ID`
+5. Create an admin user:
+   - Console → User Pool → Users → Create user
+   - Enter email + temporary password
+   - User must change password on first login (use the AWS CLI or Console to set a permanent password)
 
-## Learn More
+### 3. IAM Permissions
 
-To learn more about Next.js, take a look at the following resources:
+The Amplify execution role (or local IAM user) needs:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```json
+{
+  "Effect": "Allow",
+  "Action": [
+    "dynamodb:PutItem",
+    "dynamodb:GetItem",
+    "dynamodb:Scan",
+    "dynamodb:DeleteItem"
+  ],
+  "Resource": "arn:aws:dynamodb:*:*:table/safiba-waitlist"
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+For Cognito:
+```json
+{
+  "Effect": "Allow",
+  "Action": [
+    "cognito-idp:InitiateAuth",
+    "cognito-idp:GlobalSignOut",
+    "cognito-idp:GetUser"
+  ],
+  "Resource": "*"
+}
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Copy `.env.example` to `.env.local` for local development:
+
+```bash
+cp .env.example .env.local
+```
+
+On Amplify, set these in:
+**Amplify Console → App → Environment variables**
+
+| Variable | Description |
+|---|---|
+| `AWS_REGION` | e.g. `us-east-1` |
+| `DYNAMODB_WAITLIST_TABLE` | DynamoDB table name (default: `safiba-waitlist`) |
+| `COGNITO_USER_POOL_CLIENT_ID` | Cognito App Client ID |
+
+> On Amplify, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are **not needed** — the execution role provides credentials automatically.
+
+---
+
+## Local Development
+
+```bash
+cd safiba
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) for the landing page.
+Open [http://localhost:3000/admin/login](http://localhost:3000/admin/login) for the admin portal.
+
+---
+
+## Routes
+
+| Route | Description |
+|---|---|
+| `/` | Public landing page with waitlist form |
+| `/admin/login` | Admin sign-in (Cognito) |
+| `/admin` | Dashboard — stats + signup chart |
+| `/admin/waitlist` | Waitlist management + CSV export |
+| `/admin/users` | User management (coming soon) |
+| `/admin/incidents` | Incident management (coming soon) |
+| `/admin/missing-persons` | Missing persons registry (coming soon) |
+| `/admin/waitlist/export` | CSV download endpoint |
+
+---
+
+## Architecture
+
+```
+Next.js (Amplify)
+├── Landing page          → Server Action → DynamoDB (waitlist)
+├── Admin portal
+│   ├── Auth              → AWS Cognito (USER_PASSWORD_AUTH)
+│   ├── Session           → HTTP-only cookie (access token)
+│   ├── Waitlist CRUD     → DynamoDB Scan/Delete
+│   └── CSV export        → Route Handler
+└── proxy.ts              → Cookie-based route guard for /admin/*
+```
+
+---
+
+## Deploying to Amplify
+
+1. Push to your Git repository
+2. In Amplify Console → Connect branch
+3. Build settings are auto-detected for Next.js
+4. Add environment variables in Amplify Console
+5. Ensure the Amplify service role has the IAM permissions above
