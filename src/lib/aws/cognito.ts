@@ -6,48 +6,47 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import { createHmac } from 'crypto';
 
-export const cognitoClient = new CognitoIdentityProviderClient({
-  region: process.env.REGION ?? 'us-east-1',
-});
+// Server-side only - these will be available in Amplify
+const clientId = process.env.COGNITO_USER_POOL_CLIENT_ID;
+const clientSecret = process.env.COGNITO_USER_POOL_CLIENT_SECRET;
+const region = process.env.REGION ?? 'us-east-1';
 
-export const COGNITO_CLIENT_ID =
-  process.env.COGNITO_USER_POOL_CLIENT_ID ?? '';
+const cognitoClient = new CognitoIdentityProviderClient({ region });
 
-const COGNITO_CLIENT_SECRET =
-  process.env.COGNITO_USER_POOL_CLIENT_SECRET ?? '';
-
-/**
- * Computes the SECRET_HASH required when the Cognito app client has a secret.
- * SECRET_HASH = Base64(HMAC-SHA256(clientSecret, username + clientId))
- */
 function computeSecretHash(username: string): string {
-  return createHmac('sha256', COGNITO_CLIENT_SECRET)
-    .update(username + COGNITO_CLIENT_ID)
+  if (!clientSecret) return '';
+  return createHmac('sha256', clientSecret)
+    .update(username + clientId)
     .digest('base64');
 }
 
-/**
- * Authenticate an admin user with email + password.
- * Supports both app clients with and without a client secret.
- */
 export async function cognitoSignIn(
   email: string,
   password: string
 ): Promise<{ accessToken: string; idToken: string } | null> {
   try {
+    // Validate configuration at runtime
+    if (!clientId) {
+      console.error('COGNITO_USER_POOL_CLIENT_ID is not set in environment variables');
+      return null;
+    }
+
+    console.log(`Signing in with client ID: ${clientId.substring(0, 10)}...`);
+    console.log(`Client secret present: ${!!clientSecret}`);
+
     const authParameters: Record<string, string> = {
       USERNAME: email,
       PASSWORD: password,
     };
 
-    // Include SECRET_HASH if a client secret is configured
-    if (COGNITO_CLIENT_SECRET) {
+    if (clientSecret) {
+      console.log('Client secret found, computing SECRET_HASH...');
       authParameters.SECRET_HASH = computeSecretHash(email);
     }
 
     const command = new InitiateAuthCommand({
       AuthFlow: 'USER_PASSWORD_AUTH',
-      ClientId: COGNITO_CLIENT_ID,
+      ClientId: clientId,
       AuthParameters: authParameters,
     });
 
@@ -56,6 +55,7 @@ export async function cognitoSignIn(
 
     if (!tokens?.AccessToken || !tokens?.IdToken) return null;
 
+    console.log('Sign in successful');
     return {
       accessToken: tokens.AccessToken,
       idToken: tokens.IdToken,
@@ -66,25 +66,18 @@ export async function cognitoSignIn(
   }
 }
 
-/**
- * Sign out a user by invalidating all their tokens.
- */
 export async function cognitoSignOut(accessToken: string): Promise<void> {
   try {
     await cognitoClient.send(
       new GlobalSignOutCommand({ AccessToken: accessToken })
     );
-  } catch {
+  } catch (err) {
+    console.error('Sign out error:', err);
     // Ignore sign-out errors
   }
 }
 
-/**
- * Verify an access token and return the user's email.
- */
-export async function cognitoGetUser(
-  accessToken: string
-): Promise<string | null> {
+export async function cognitoGetUser(accessToken: string): Promise<string | null> {
   try {
     const response = await cognitoClient.send(
       new GetUserCommand({ AccessToken: accessToken })
@@ -93,7 +86,8 @@ export async function cognitoGetUser(
       (a) => a.Name === 'email'
     );
     return emailAttr?.Value ?? null;
-  } catch {
+  } catch (err) {
+    console.error('Get user error:', err);
     return null;
   }
 }

@@ -1,15 +1,25 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useState, useEffect } from 'react';
 import { adminSignIn } from '@/src/actions/auth';
 import type { AuthResult } from '@/src/actions/auth';
 import { Eye, EyeOff } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const initialState: AuthResult = { success: false, error: '' };
 
 export default function AdminLoginPage() {
+  const router = useRouter();
   const [state, action, pending] = useActionState(adminSignIn, initialState);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Redirect when login is successful
+  useEffect(() => {
+    if (state.success) {
+      // Redirect to admin dashboard
+      router.push('/admin/dashboard');
+    }
+  }, [state.success, router]);
 
   return (
     <div className="min-h-screen bg-neutral-950 flex items-center justify-center px-4">
