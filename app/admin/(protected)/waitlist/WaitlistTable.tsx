@@ -30,30 +30,30 @@ export default function WaitlistTable({ entries }: { entries: WaitlistEntry[] })
         placeholder="Search by email…"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="bg-neutral-900 border border-neutral-800 px-4 py-2.5 text-sm text-white placeholder-neutral-600 outline-none focus:border-neutral-600 transition-colors max-w-sm"
+        className="bg-white border border-neutral-300 px-4 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-200 transition-colors max-w-sm"
       />
 
       {/* Table */}
-      <div className="border border-neutral-800 overflow-hidden">
+      <div className="border border-neutral-200 bg-white overflow-hidden shadow-sm">
         {/* Header */}
-        <div className="hidden sm:grid grid-cols-[1fr_auto_auto] gap-4 px-5 py-3 bg-neutral-900 border-b border-neutral-800">
+        <div className="hidden sm:grid grid-cols-[1fr_auto_auto] gap-4 px-5 py-3 bg-neutral-50 border-b border-neutral-200">
           <span className="text-xs tracking-widest uppercase text-neutral-500">Email</span>
           <span className="text-xs tracking-widest uppercase text-neutral-500">Joined</span>
           <span className="text-xs tracking-widest uppercase text-neutral-500">Action</span>
         </div>
 
         {filtered.length === 0 ? (
-          <div className="px-5 py-12 text-center text-sm text-neutral-600">
+          <div className="px-5 py-12 text-center text-sm text-neutral-400">
             {search ? 'No results found.' : 'No signups yet.'}
           </div>
         ) : (
-          <div className="divide-y divide-neutral-800">
+          <div className="divide-y divide-neutral-100">
             {filtered.map((entry) => (
               <div
                 key={entry.pk}
-                className="flex flex-col sm:grid sm:grid-cols-[1fr_auto_auto] gap-2 sm:gap-4 items-start sm:items-center px-5 py-3.5 hover:bg-neutral-900/50 transition-colors"
+                className="flex flex-col sm:grid sm:grid-cols-[1fr_auto_auto] gap-2 sm:gap-4 items-start sm:items-center px-5 py-3.5 hover:bg-neutral-50 transition-colors"
               >
-                <span className="text-sm text-white font-medium">{entry.email}</span>
+                <span className="text-sm text-neutral-900 font-medium">{entry.email}</span>
                 <span className="text-xs text-neutral-500">
                   {new Date(entry.joinedAt).toLocaleDateString('en-GB', {
                     day: 'numeric',
@@ -65,7 +65,7 @@ export default function WaitlistTable({ entries }: { entries: WaitlistEntry[] })
                   type="button"
                   onClick={() => handleDelete(entry.pk, entry.email)}
                   disabled={isPending}
-                  className="text-xs text-red-500 border border-red-900/50 px-2.5 py-1 hover:border-red-700 hover:text-red-400 disabled:opacity-50 transition-colors"
+                  className="text-xs text-red-600 border border-red-200 px-2.5 py-1 hover:border-red-300 hover:bg-red-50 disabled:opacity-50 transition-colors"
                 >
                   Remove
                 </button>
@@ -75,7 +75,7 @@ export default function WaitlistTable({ entries }: { entries: WaitlistEntry[] })
         )}
       </div>
 
-      <p className="text-xs text-neutral-600">
+      <p className="text-xs text-neutral-500">
         Showing {filtered.length} of {entries.length} entries
       </p>
     </div>

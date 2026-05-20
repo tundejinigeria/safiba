@@ -14,8 +14,8 @@ export default function WaitlistForm() {
 
   if (state.success) {
     return (
-      <div className="border border-emerald-800 bg-emerald-950/30 px-6 py-5">
-        <p className="text-emerald-400 font-medium mb-1">You're on the list. ✓</p>
+      <div className="border border-emerald-200 bg-emerald-50 px-6 py-5">
+        <p className="text-emerald-700 font-medium mb-1">You're on the list. ✓</p>
         <p className="text-sm text-emerald-600">
           We'll reach out when Safiba launches. Stay safe out there.
         </p>
@@ -31,20 +31,20 @@ export default function WaitlistForm() {
           name="email"
           required
           placeholder="your@email.com"
-          className="flex-1 bg-neutral-900 border border-neutral-800 px-4 py-3 text-sm text-white placeholder-neutral-600 outline-none focus:border-neutral-600 transition-colors"
+          className="flex-1 bg-white border border-neutral-300 px-4 py-3 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-200 transition-colors"
         />
         <button
           type="submit"
           disabled={pending}
-          className="bg-white text-black px-8 py-3 text-sm font-medium hover:bg-neutral-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
+          className="bg-neutral-900 text-white px-8 py-3 text-sm font-medium hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
         >
           {pending ? 'Joining…' : 'Join Waitlist'}
         </button>
       </div>
       {!state.success && state.error && (
-        <p className="text-xs text-red-400">{state.error}</p>
+        <p className="text-xs text-red-600">{state.error}</p>
       )}
-      <p className="text-xs text-neutral-600">
+      <p className="text-xs text-neutral-500">
         No spam. No noise. Just the launch date and early access.
       </p>
     </form>
