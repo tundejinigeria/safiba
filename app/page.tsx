@@ -62,7 +62,7 @@ function Hero() {
 
       <div className="relative max-w-5xl">
         <p className="mb-4 text-xs tracking-[0.3em] uppercase text-neutral-500">
-          Nigeria's Safety Intelligence Platform
+          Nigeria's Safety Awareness Platform
         </p>
         <h1 className="text-[clamp(2.8rem,9vw,8.5rem)] font-semibold leading-[0.88] tracking-tight text-white">
           Know what's<br />
@@ -188,7 +188,7 @@ const featureList = [
   { number: "03", icon: Wifi, title: "Offline-first", desc: "Core features work on low bandwidth. Designed for Nigerian network realities." },
   { number: "04", icon: Globe, title: "Multi-language", desc: "English, Pidgin, Yoruba, Igbo, Hausa. Safety information in your language." },
   { number: "05", icon: EyeOff, title: "Anonymous Reporting", desc: "Report sensitive incidents without revealing your identity. Your safety first." },
-  { number: "06", icon: Building2, title: "Authority Integration", desc: "Direct escalation to verified police, FRSC, and emergency services channels." },
+  // { number: "06", icon: Building2, title: "Authority Integration", desc: "Direct escalation to verified police, FRSC, and emergency services channels." },
 ];
 
 function Features() {
@@ -297,7 +297,7 @@ function Footer() {
     <footer className="border-t border-neutral-900 px-5 py-8 sm:px-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <p className="text-sm font-semibold tracking-widest uppercase text-white">Safiba</p>
-        <p className="text-xs text-neutral-600 mt-0.5">Nigeria's Safety Intelligence Platform</p>
+        <p className="text-xs text-neutral-600 mt-0.5">Nigeria's Safety Awareness Platform</p>
       </div>
       <div className="flex items-center gap-6">
         <a href="#" className="text-xs text-neutral-600 tracking-widest uppercase hover:text-neutral-300 transition-colors">Twitter</a>
