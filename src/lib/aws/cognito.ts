@@ -11,7 +11,7 @@ export const cognitoClient = new CognitoIdentityProviderClient({
 });
 
 export const COGNITO_CLIENT_ID =
-  process.env.NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID ?? '';
+  process.env.COGNITO_USER_POOL_CLIENT_ID ?? '';
 
 const COGNITO_CLIENT_SECRET =
   process.env.COGNITO_USER_POOL_CLIENT_SECRET ?? '';
