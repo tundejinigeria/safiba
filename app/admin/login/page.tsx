@@ -5,6 +5,7 @@ import { adminSignIn } from '@/src/actions/auth';
 import type { AuthResult } from '@/src/actions/auth';
 import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const initialState: AuthResult = { success: false, error: '' };
 
@@ -25,7 +26,7 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-neutral-100 flex items-center justify-center px-4">
       <div className="w-full max-w-sm bg-white border border-neutral-200 p-8 shadow-sm">
         <div className="mb-8">
-          <p className="text-xs tracking-widest uppercase text-neutral-500 mb-2">Safiba</p>
+          <Image src="/safiba-logo.svg" alt="Safiba" width={28} height={32} className="h-7 w-auto mb-4" />
           <h1 className="text-2xl font-semibold text-neutral-900">Admin Portal</h1>
           <p className="mt-1 text-sm text-neutral-500">Sign in to manage Safiba records.</p>
         </div>

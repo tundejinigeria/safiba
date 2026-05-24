@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   Bell,
   Search,
@@ -19,9 +20,7 @@ import WaitlistForm from "@/src/components/WaitlistForm";
 function Nav() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-4 sm:px-8 sm:py-5 bg-white/80 backdrop-blur-sm border-b border-neutral-200">
-      <span className="text-sm font-semibold tracking-widest uppercase text-neutral-900">
-        Safiba
-      </span>
+      <Image src="/safiba-logo.svg" alt="Safiba" width={24} height={27} className="h-6 w-auto" />
       <div className="flex items-center gap-6 sm:gap-8">
         <a href="#features" className="hidden sm:block text-xs tracking-widest uppercase text-neutral-500 hover:text-neutral-900 transition-colors">
           Features
@@ -298,9 +297,9 @@ function Waitlist() {
 function Footer() {
   return (
     <footer className="border-t border-neutral-200 bg-neutral-50 px-5 py-8 sm:px-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <p className="text-sm font-semibold tracking-widest uppercase text-neutral-900">Safiba</p>
-        <p className="text-xs text-neutral-500 mt-0.5">Nigeria's Safety Awareness Platform</p>
+      <div className="flex items-center gap-3">
+        <Image src="/safiba-logo.svg" alt="Safiba" width={20} height={22} className="h-5 w-auto" />
+        <p className="text-xs text-neutral-500">Nigeria's Safety Awareness Platform</p>
       </div>
       <div className="flex items-center gap-6">
         <a href="#" className="text-xs text-neutral-500 tracking-widest uppercase hover:text-neutral-900 transition-colors">Twitter</a>
