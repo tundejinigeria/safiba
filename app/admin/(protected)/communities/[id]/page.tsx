@@ -6,7 +6,10 @@ import { CommunityActions } from './CommunityActions';
 
 export default async function CommunityDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const community = await getCommunity(id);
+  const [community, members] = await Promise.all([
+    getCommunity(id),
+    getCommunityMembers(id),
+  ]);
 
   if (!community) {
     return (
@@ -56,6 +59,48 @@ export default async function CommunityDetailPage({ params }: { params: Promise<
 
       {/* Admin Actions */}
       <CommunityActions communityId={community.id} verified={community.verified} memberCount={community.memberCount} />
+
+      {/* Members List */}
+      <div className="border border-neutral-200 bg-white mt-6">
+        <div className="px-5 py-4 border-b border-neutral-200 flex items-center gap-2">
+          <Users size={14} className="text-indigo-500" />
+          <h2 className="text-sm font-medium text-neutral-900">Members ({members.length})</h2>
+        </div>
+        {members.length > 0 ? (
+          <div className="divide-y divide-neutral-100">
+            {members.slice(0, 20).map((member: any) => (
+              <div key={member.id || member.userId} className="px-5 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-neutral-100 rounded-full flex items-center justify-center">
+                    <span className="text-xs font-medium text-neutral-600">
+                      {(member.name || 'U')[0].toUpperCase()}
+                    </span>
+                  </div>
+                  <div>
+                    <Link href={`/admin/users/${member.userId}`} className="text-sm text-neutral-700 hover:text-blue-600">
+                      {member.name || 'Unknown'}
+                    </Link>
+                    {member.username && <p className="text-xs text-neutral-500">@{member.username}</p>}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-neutral-500 capitalize px-2 py-0.5 bg-neutral-100">{member.role}</span>
+                  <span className="text-xs text-neutral-400">
+                    {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString() : ''}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {members.length > 20 && (
+              <p className="px-5 py-3 text-xs text-neutral-400 text-center">
+                Showing 20 of {members.length} members
+              </p>
+            )}
+          </div>
+        ) : (
+          <p className="px-5 py-6 text-sm text-neutral-400 text-center">No members found</p>
+        )}
+      </div>
     </div>
   );
 }

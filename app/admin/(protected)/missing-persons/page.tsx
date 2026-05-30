@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Search, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight, AlertCircle } from 'lucide-react';
 import { getMissingPersons } from '@/src/actions/admin/missing-persons';
 import { StatusBadge } from '@/src/components/admin/StatusBadge';
 import { EmptyState } from '@/src/components/admin/EmptyState';
@@ -7,14 +7,19 @@ import { EmptyState } from '@/src/components/admin/EmptyState';
 export default async function MissingPersonsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ cursor?: string; status?: string }>
+  searchParams: Promise<{ cursor?: string; status?: string; search?: string }>
 }) {
   const params = await searchParams;
   const result = await getMissingPersons({
     cursor: params.cursor,
     limit: 25,
-    filters: { status: params.status || 'all' },
+    filters: { status: params.status || 'all', search: params.search || '' },
   });
+
+  // Summary stats
+  const activeCount = result.items.filter(p => p.status === 'active').length;
+  const foundSafeCount = result.items.filter(p => p.status === 'found_safe').length;
+  const closedCount = result.items.filter(p => p.status === 'closed' || p.status === 'found_deceased').length;
 
   return (
     <div className="px-4 py-6 sm:px-6 sm:py-8 max-w-6xl mx-auto">
@@ -23,7 +28,43 @@ export default async function MissingPersonsPage({
         <p className="text-sm text-neutral-500 mt-0.5">Manage missing persons cases</p>
       </div>
 
-      <form className="flex gap-3 mb-6">
+      {/* Active Cases Alert */}
+      {activeCount > 0 && (
+        <div className="flex items-center gap-3 px-4 py-3 mb-6 border border-amber-200 bg-amber-50">
+          <AlertCircle size={16} className="text-amber-600 shrink-0" />
+          <p className="text-sm text-amber-800">
+            <span className="font-semibold">{activeCount} active case{activeCount !== 1 ? 's' : ''}</span> currently being investigated
+          </p>
+        </div>
+      )}
+
+      {/* Summary Stats */}
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        <div className="border border-amber-100 bg-amber-50/50 px-4 py-3">
+          <p className="text-lg font-semibold text-amber-700">{activeCount}</p>
+          <p className="text-xs text-amber-600">Active</p>
+        </div>
+        <div className="border border-emerald-100 bg-emerald-50/50 px-4 py-3">
+          <p className="text-lg font-semibold text-emerald-700">{foundSafeCount}</p>
+          <p className="text-xs text-emerald-600">Found Safe</p>
+        </div>
+        <div className="border border-neutral-200 bg-neutral-50 px-4 py-3">
+          <p className="text-lg font-semibold text-neutral-700">{closedCount}</p>
+          <p className="text-xs text-neutral-500">Closed</p>
+        </div>
+      </div>
+
+      <form className="flex flex-wrap gap-3 mb-6">
+        <div className="flex-1 min-w-[200px] relative">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+          <input
+            type="text"
+            name="search"
+            defaultValue={params.search}
+            placeholder="Search by name, description, or location..."
+            className="w-full pl-9 pr-4 py-2 text-sm border border-neutral-200 bg-white focus:outline-none focus:border-neutral-400"
+          />
+        </div>
         <select name="status" defaultValue={params.status || 'all'} className="px-3 py-2 text-sm border border-neutral-200 bg-white">
           <option value="all">All statuses</option>
           <option value="active">Active</option>

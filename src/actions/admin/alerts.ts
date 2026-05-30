@@ -32,6 +32,14 @@ export async function getAlerts(params: PaginatedParams = {}): Promise<Paginated
   let alerts = (result.Items || []).map(mapDynamoToAlert)
 
   // Apply filters
+  if (filters?.search) {
+    const search = filters.search.toLowerCase()
+    alerts = alerts.filter(a =>
+      a.description.toLowerCase().includes(search) ||
+      (a.location.name || '').toLowerCase().includes(search) ||
+      a.category.toLowerCase().includes(search)
+    )
+  }
   if (filters?.status && filters.status !== 'all') {
     alerts = alerts.filter(a => a.status === filters.status)
   }

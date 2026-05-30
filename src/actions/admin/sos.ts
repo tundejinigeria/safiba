@@ -41,9 +41,11 @@ export async function getSOSEvents(filters?: { active?: boolean }): Promise<Pagi
   // Sort by triggered time (newest first)
   events.sort((a, b) => new Date(b.triggeredAt).getTime() - new Date(a.triggeredAt).getTime())
 
-  // Filter by active status
-  if (filters?.active !== undefined) {
-    events = events.filter(e => filters.active ? e.status === 'active' : e.status !== 'active')
+  // Filter by status
+  if (filters?.active === true) {
+    events = events.filter(e => e.status === 'active')
+  } else if (filters?.active === false) {
+    events = events.filter(e => e.status !== 'active')
   }
 
   return {

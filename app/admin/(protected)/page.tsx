@@ -1,9 +1,20 @@
 import Link from 'next/link';
-import { Users, AlertTriangle, Globe, Search, Siren, ArrowRight, TrendingUp, MapPin } from 'lucide-react';
-import { getDashboardStats } from '@/src/actions/admin/dashboard';
+import { Users, AlertTriangle, Globe, Search, Siren, ArrowRight, TrendingUp, MapPin, Clock, UserPlus, ShieldAlert, Radio } from 'lucide-react';
+import { getDashboardStats, getRecentActivity } from '@/src/actions/admin/dashboard';
+
+const ACTIVITY_ICONS: Record<string, { icon: typeof Users; color: string }> = {
+  user_joined: { icon: UserPlus, color: 'text-indigo-500' },
+  alert_created: { icon: AlertTriangle, color: 'text-red-500' },
+  sos_triggered: { icon: Radio, color: 'text-rose-500' },
+  community_created: { icon: Globe, color: 'text-violet-500' },
+  case_reported: { icon: Search, color: 'text-amber-500' },
+};
 
 export default async function AdminDashboard() {
-  const stats = await getDashboardStats();
+  const [stats, recentActivity] = await Promise.all([
+    getDashboardStats(),
+    getRecentActivity(),
+  ]);
 
   return (
     <div className="px-4 py-6 sm:px-6 sm:py-8 max-w-6xl mx-auto">
@@ -136,6 +147,38 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
+      {/* Recent Activity */}
+      <div className="border border-neutral-200 bg-white shadow-sm mb-8">
+        <div className="px-5 py-4 border-b border-neutral-200 flex items-center gap-2">
+          <Clock size={14} className="text-neutral-500" />
+          <h2 className="text-sm font-medium text-neutral-900">Recent Activity</h2>
+        </div>
+        {recentActivity.length > 0 ? (
+          <div className="divide-y divide-neutral-100">
+            {recentActivity.map((activity, i) => {
+              const config = ACTIVITY_ICONS[activity.type] || { icon: Clock, color: 'text-neutral-500' };
+              const Icon = config.icon;
+              return (
+                <Link key={i} href={activity.href} className="flex items-center gap-3 px-5 py-3 hover:bg-neutral-50 transition-colors">
+                  <Icon size={14} className={config.color + ' shrink-0'} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-neutral-700 truncate">
+                      <span className="font-medium">{activity.title}</span>{' '}
+                      <span className="text-neutral-500">{activity.description}</span>
+                    </p>
+                  </div>
+                  <span className="text-xs text-neutral-400 shrink-0">
+                    {activity.timestamp ? formatRelativeTime(activity.timestamp) : ''}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-sm text-neutral-400 text-center py-8">No recent activity</p>
+        )}
+      </div>
+
       {/* Quick links */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
@@ -159,4 +202,19 @@ export default async function AdminDashboard() {
       </div>
     </div>
   );
+}
+
+function formatRelativeTime(timestamp: string): string {
+  const now = new Date();
+  const date = new Date(timestamp);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return 'just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return date.toLocaleDateString();
 }

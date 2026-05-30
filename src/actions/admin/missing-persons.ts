@@ -48,6 +48,15 @@ export async function getMissingPersons(params: PaginatedParams = {}): Promise<P
   if (filters?.status && filters.status !== 'all') {
     cases = cases.filter(c => c.status === filters.status)
   }
+  if (filters?.search) {
+    const search = filters.search.toLowerCase()
+    cases = cases.filter(c =>
+      c.name.toLowerCase().includes(search) ||
+      c.description.toLowerCase().includes(search) ||
+      (c.lastSeenLocation.name || '').toLowerCase().includes(search) ||
+      c.caseId.toLowerCase().includes(search)
+    )
+  }
 
   return {
     items: cases,

@@ -7,6 +7,86 @@ import type { DashboardStats } from '@/src/types/admin'
 
 const TABLE = TABLES.MAIN
 
+export interface RecentActivity {
+  type: 'user_joined' | 'alert_created' | 'sos_triggered' | 'community_created' | 'case_reported'
+  title: string
+  description: string
+  timestamp: string
+  href: string
+}
+
+export async function getRecentActivity(): Promise<RecentActivity[]> {
+  const admin = await requireAdmin()
+  if (!admin) throw new Error('Unauthorized')
+
+  const activities: RecentActivity[] = []
+
+  try {
+    // Recent users
+    const usersResult = await dynamo.send(new QueryCommand({
+      TableName: TABLE,
+      IndexName: 'GSI3',
+      KeyConditionExpression: 'GSI3PK = :pk',
+      ExpressionAttributeValues: { ':pk': 'TYPE#USERS' },
+      ScanIndexForward: false,
+      Limit: 5,
+    }))
+    for (const item of (usersResult.Items || [])) {
+      activities.push({
+        type: 'user_joined',
+        title: item.full_name || item.username || 'New user',
+        description: 'joined the platform',
+        timestamp: item.created_at || item.GSI3SK || '',
+        href: `/admin/users/${item.id || item.PK?.replace('USER#', '')}`,
+      })
+    }
+
+    // Recent alerts
+    const alertsResult = await dynamo.send(new QueryCommand({
+      TableName: TABLE,
+      IndexName: 'GSI3',
+      KeyConditionExpression: 'GSI3PK = :pk',
+      ExpressionAttributeValues: { ':pk': 'TYPE#ALERTS' },
+      ScanIndexForward: false,
+      Limit: 5,
+    }))
+    for (const item of (alertsResult.Items || [])) {
+      activities.push({
+        type: 'alert_created',
+        title: `${item.category || 'Alert'} incident`,
+        description: (item.description || '').slice(0, 60) + ((item.description || '').length > 60 ? '...' : ''),
+        timestamp: item.created_at || item.GSI3SK || '',
+        href: `/admin/incidents/${item.id}`,
+      })
+    }
+
+    // Recent SOS
+    const sosResult = await dynamo.send(new ScanCommand({
+      TableName: TABLE,
+      FilterExpression: 'begins_with(PK, :pk) AND SK = :sk',
+      ExpressionAttributeValues: { ':pk': 'SOS#', ':sk': 'METADATA' },
+      Limit: 5,
+    }))
+    for (const item of (sosResult.Items || [])) {
+      activities.push({
+        type: 'sos_triggered',
+        title: item.user_name || 'User',
+        description: 'triggered SOS emergency',
+        timestamp: item.triggered_at || item.created_at || '',
+        href: '/admin/sos',
+      })
+    }
+  } catch (err) {
+    console.error('Error fetching recent activity:', err)
+  }
+
+  // Sort by timestamp descending and take top 10
+  return activities
+    .filter(a => a.timestamp)
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+    .slice(0, 10)
+}
+
 export async function getDashboardStats(): Promise<DashboardStats> {
   const admin = await requireAdmin()
   if (!admin) throw new Error('Unauthorized')

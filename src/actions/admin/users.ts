@@ -20,7 +20,7 @@ export async function getUsers(params: PaginatedParams = {}): Promise<PaginatedR
   const pagination = buildPaginationParams(cursor, limit)
 
   // Query all users via GSI3
-  const result = await dynamo.send(new QueryCommand({
+  let result = await dynamo.send(new QueryCommand({
     TableName: TABLE,
     IndexName: 'GSI3',
     KeyConditionExpression: 'GSI3PK = :pk',
@@ -28,6 +28,20 @@ export async function getUsers(params: PaginatedParams = {}): Promise<PaginatedR
     ScanIndexForward: false,
     ...pagination,
   }))
+
+  // Fallback: if GSI3 returns no results, scan for users directly
+  // This handles users created before GSI3PK was added to the write path
+  if (!result.Items || result.Items.length === 0) {
+    result = await dynamo.send(new ScanCommand({
+      TableName: TABLE,
+      FilterExpression: 'begins_with(PK, :prefix) AND SK = :sk',
+      ExpressionAttributeValues: {
+        ':prefix': 'USER#',
+        ':sk': 'PROFILE',
+      },
+      ...pagination,
+    }))
+  }
 
   let users = (result.Items || []).map(mapDynamoToUser)
 
@@ -44,6 +58,10 @@ export async function getUsers(params: PaginatedParams = {}): Promise<PaginatedR
 
   if (filters?.status && filters.status !== 'all') {
     users = users.filter(u => u.status === filters.status)
+  }
+
+  if (filters?.role && filters.role !== 'all') {
+    users = users.filter(u => u.role === filters.role)
   }
 
   if (filters?.trustScoreMin) {

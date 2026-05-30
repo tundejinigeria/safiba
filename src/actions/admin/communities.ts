@@ -44,6 +44,14 @@ export async function getCommunities(params: PaginatedParams = {}): Promise<Pagi
   if (filters?.verified && filters.verified !== 'all') {
     communities = communities.filter(c => filters.verified === 'true' ? c.verified : !c.verified)
   }
+  if (filters?.search) {
+    const search = filters.search.toLowerCase()
+    communities = communities.filter(c =>
+      c.name.toLowerCase().includes(search) ||
+      (c.locationArea || '').toLowerCase().includes(search) ||
+      c.description.toLowerCase().includes(search)
+    )
+  }
 
   return {
     items: communities,

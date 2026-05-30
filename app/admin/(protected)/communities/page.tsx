@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Globe, ArrowRight } from 'lucide-react';
+import { Globe, ArrowRight, Search, Users } from 'lucide-react';
 import { getCommunities } from '@/src/actions/admin/communities';
 import { StatusBadge } from '@/src/components/admin/StatusBadge';
 import { EmptyState } from '@/src/components/admin/EmptyState';
@@ -7,14 +7,20 @@ import { EmptyState } from '@/src/components/admin/EmptyState';
 export default async function CommunitiesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ cursor?: string; type?: string; verified?: string }>
+  searchParams: Promise<{ cursor?: string; type?: string; verified?: string; search?: string }>
 }) {
   const params = await searchParams;
   const result = await getCommunities({
     cursor: params.cursor,
     limit: 25,
-    filters: { type: params.type || 'all', verified: params.verified || 'all' },
+    filters: { type: params.type || 'all', verified: params.verified || 'all', search: params.search || '' },
   });
+
+  // Summary stats
+  const verifiedCount = result.items.filter(c => c.verified).length;
+  const unverifiedCount = result.items.filter(c => !c.verified).length;
+  const totalMembers = result.items.reduce((sum, c) => sum + c.memberCount, 0);
+  const privateCount = result.items.filter(c => c.isPrivate).length;
 
   return (
     <div className="px-4 py-6 sm:px-6 sm:py-8 max-w-6xl mx-auto">
@@ -23,7 +29,40 @@ export default async function CommunitiesPage({
         <p className="text-sm text-neutral-500 mt-0.5">Manage and verify communities</p>
       </div>
 
+      {/* Summary Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div className="border border-neutral-200 bg-white px-4 py-3">
+          <p className="text-lg font-semibold text-neutral-900">{result.count}</p>
+          <p className="text-xs text-neutral-500">Showing</p>
+        </div>
+        <div className="border border-emerald-100 bg-emerald-50/50 px-4 py-3">
+          <p className="text-lg font-semibold text-emerald-700">{verifiedCount}</p>
+          <p className="text-xs text-emerald-600">Verified</p>
+        </div>
+        <div className="border border-amber-100 bg-amber-50/50 px-4 py-3">
+          <p className="text-lg font-semibold text-amber-700">{unverifiedCount}</p>
+          <p className="text-xs text-amber-600">Pending Verification</p>
+        </div>
+        <div className="border border-indigo-100 bg-indigo-50/50 px-4 py-3">
+          <div className="flex items-center gap-1">
+            <Users size={12} className="text-indigo-500" />
+            <p className="text-lg font-semibold text-indigo-700">{totalMembers}</p>
+          </div>
+          <p className="text-xs text-indigo-600">Total Members</p>
+        </div>
+      </div>
+
       <form className="flex flex-wrap gap-3 mb-6">
+        <div className="flex-1 min-w-[200px] relative">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+          <input
+            type="text"
+            name="search"
+            defaultValue={params.search}
+            placeholder="Search by name or location..."
+            className="w-full pl-9 pr-4 py-2 text-sm border border-neutral-200 bg-white focus:outline-none focus:border-neutral-400"
+          />
+        </div>
         <select name="type" defaultValue={params.type || 'all'} className="px-3 py-2 text-sm border border-neutral-200 bg-white">
           <option value="all">All types</option>
           <option value="street">Street</option>
