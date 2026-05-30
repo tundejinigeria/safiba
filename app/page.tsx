@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import {
   Bell,
@@ -7,11 +6,12 @@ import {
   ShieldCheck,
   Users,
   Map,
-  Wifi,
-  Globe,
-  EyeOff,
-  Building2,
+  MapPin,
+  Navigation,
+  Shield,
   ArrowRight,
+  CheckCircle,
+  Smartphone,
 } from "lucide-react";
 import WaitlistForm from "@/src/components/WaitlistForm";
 
@@ -29,7 +29,7 @@ function Nav() {
           How it works
         </a>
         <a href="#waitlist" className="text-xs tracking-widest uppercase text-neutral-900 border border-neutral-300 px-4 py-2 hover:bg-neutral-900 hover:text-white transition-colors">
-          Join Waitlist
+          Get Early Access
         </a>
       </div>
     </nav>
@@ -53,31 +53,30 @@ function Hero() {
       {/* Live indicator */}
       <div className="absolute top-24 right-8 sm:top-28 sm:right-16 flex items-center gap-2">
         <span className="relative flex h-2.5 w-2.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
-          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
         </span>
-        <span className="text-xs text-red-600 tracking-widest uppercase">Live</span>
+        <span className="text-xs text-emerald-600 tracking-widest uppercase">Live Now</span>
       </div>
 
       <div className="relative max-w-5xl">
         <p className="mb-4 text-xs tracking-[0.3em] uppercase text-neutral-500">
-          Nigeria's Safety Awareness Platform
+          Nigeria's Community-Powered Safety Platform
         </p>
         <h1 className="text-[clamp(2.8rem,9vw,8.5rem)] font-semibold leading-[0.88] tracking-tight text-neutral-900">
           Know what's<br />
           happening<br />
-          <em className="not-italic text-neutral-400">before it hits you.</em>
+          <em className="not-italic text-neutral-400">around you.</em>
         </h1>
         <p className="mt-8 text-lg sm:text-xl font-light leading-relaxed text-neutral-600 max-w-xl">
-          Real-time alerts. Missing persons. SOS. Verified communities.
-          Trust-scored data. Built for 200 million Nigerians.
+          Real-time safety alerts from your neighbourhood. Report incidents, find missing persons, trigger SOS — all verified by your community.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row gap-3">
           <a
             href="#waitlist"
             className="inline-flex items-center justify-center gap-2 bg-neutral-900 text-white px-8 py-3.5 text-sm font-medium hover:bg-neutral-700 transition-colors"
           >
-            Join the Waitlist
+            Get Early Access
             <ArrowRight size={14} />
           </a>
           <a
@@ -125,26 +124,26 @@ function Problem() {
 const solutionFeatures = [
   {
     icon: Bell,
-    title: "Real-time Alerts",
-    desc: "Verified incident reports from your community, seconds after they happen.",
+    title: "Real-time Safety Alerts",
+    desc: "Get notified about incidents near your home, work, or school — within seconds of being reported.",
     iconColor: "text-blue-600",
   },
   {
     icon: Search,
-    title: "Missing Persons",
-    desc: "Coordinated search network with photo sharing and last-seen location tracking.",
+    title: "Missing Persons Network",
+    desc: "Report and find missing people with photos, last-seen location on map, and proximity-based notifications.",
     iconColor: "text-amber-500",
   },
   {
     icon: AlertTriangle,
-    title: "SOS",
-    desc: "One-tap emergency broadcast to your trusted circle and nearby responders.",
+    title: "One-Tap SOS",
+    desc: "Emergency panic button that shares your live location with your trusted contacts instantly.",
     iconColor: "text-red-500",
   },
   {
     icon: ShieldCheck,
-    title: "Trust-scored Data",
-    desc: "Every report is scored for credibility. No more rumours masquerading as facts.",
+    title: "Community Verification",
+    desc: "2 confirmations from nearby users = verified alert. False reports get flagged and hidden automatically.",
     iconColor: "text-emerald-600",
   },
 ];
@@ -157,13 +156,11 @@ function Solution() {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
           <div>
             <h2 className="text-[clamp(1.8rem,4vw,3.5rem)] font-semibold leading-[0.95] tracking-tight text-neutral-900">
-              One platform.<br />
-              <em className="not-italic text-neutral-400">All the truth.</em>
+              Your neighbourhood.<br />
+              <em className="not-italic text-neutral-400">Your safety network.</em>
             </h2>
             <p className="mt-6 text-lg font-light leading-relaxed text-neutral-600">
-              Safiba replaces fragmented WhatsApp groups, delayed news, and
-              unanswered emergency lines with a single, trusted, real-time
-              platform — community-powered and trust-scored.
+              Safiba connects you with people in your area to share real-time safety intelligence. No more relying on delayed news or unverified WhatsApp forwards.
             </p>
           </div>
           <div className="flex flex-col gap-4">
@@ -186,11 +183,12 @@ function Solution() {
 /* ── Features  */
 
 const featureList = [
-  { number: "01", icon: Users, title: "Verified Communities", desc: "Join location-based safety groups verified by community leaders. No anonymous trolls.", iconColor: "text-indigo-500" },
-  { number: "02", icon: Map, title: "Incident Heatmaps", desc: "See where incidents are clustering in real time. Know which routes to avoid.", iconColor: "text-rose-500" },
-  { number: "03", icon: Wifi, title: "Offline-first", desc: "Core features work on low bandwidth. Designed for Nigerian network realities.", iconColor: "text-teal-500" },
-  { number: "04", icon: Globe, title: "Multi-language", desc: "English, Pidgin, Yoruba, Igbo, Hausa. Safety information in your language.", iconColor: "text-violet-500" },
-  { number: "05", icon: EyeOff, title: "Anonymous Reporting", desc: "Report sensitive incidents without revealing your identity. Your safety first.", iconColor: "text-orange-500" },
+  { number: "01", icon: Users, title: "Safety Communities", desc: "Join or create neighbourhood groups — street, estate, school, or workplace. Share alerts with people who matter.", iconColor: "text-indigo-500" },
+  { number: "02", icon: Map, title: "Safety Map", desc: "See incidents on a live map with severity-colored markers. Check route safety before you travel.", iconColor: "text-rose-500" },
+  { number: "03", icon: MapPin, title: "Pin-Drop Location", desc: "Report incidents by dropping a pin on the exact location. No typing addresses — just move the map.", iconColor: "text-teal-500" },
+  { number: "04", icon: Navigation, title: "Route Safety Check", desc: "Planning a trip? Check if your route passes through areas with recent incidents before you leave.", iconColor: "text-violet-500" },
+  { number: "05", icon: Shield, title: "Trust Scores", desc: "Every user has a trust score. Accurate reports increase it. False reports decrease it. No more rumours.", iconColor: "text-orange-500" },
+  { number: "06", icon: CheckCircle, title: "2-Confirmation Verification", desc: "Alerts become 'verified' after 2 nearby users confirm. Unverified alerts show lower visual weight.", iconColor: "text-emerald-500" },
 ];
 
 function Features() {
@@ -199,7 +197,7 @@ function Features() {
       <div className="max-w-6xl">
         <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">Features</p>
         <h2 className="text-[clamp(1.8rem,4vw,3.5rem)] font-semibold leading-[0.95] tracking-tight text-neutral-900 mb-14">
-          Built for how Nigerians<br />actually communicate.
+          Built for how Nigerians<br />actually live.
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {featureList.map(({ number, icon: Icon, title, desc, iconColor }) => (
@@ -230,10 +228,10 @@ function HowItWorks() {
         </h2>
         <div className="grid grid-cols-1 gap-px bg-neutral-200 sm:grid-cols-4">
           {[
-            { step: "1", title: "Join your community", desc: "Sign up and connect to verified safety groups in your area." },
-            { step: "2", title: "Receive alerts", desc: "Get real-time notifications about incidents near you — before they spread." },
-            { step: "3", title: "Report & verify", desc: "Submit reports. Community members verify. Trust scores update automatically." },
-            { step: "4", title: "Stay safe", desc: "Make informed decisions. Share with family. Escalate when needed." },
+            { step: "1", title: "Add your locations", desc: "Pin your home, work, and places you care about on the map. Set your alert radius." },
+            { step: "2", title: "Get real-time alerts", desc: "See safety incidents happening near your locations — reported and verified by your community." },
+            { step: "3", title: "Report & confirm", desc: "See something? Drop a pin and report it. Others nearby confirm — 2 confirmations = verified." },
+            { step: "4", title: "Stay safe together", desc: "Join communities, check route safety, trigger SOS in emergencies. Safety in numbers." },
           ].map(({ step, title, desc }) => (
             <div key={step} className="bg-white p-6 sm:p-8">
               <p className="text-4xl font-semibold text-neutral-200 mb-6 font-mono">{step}</p>
@@ -256,8 +254,8 @@ function Stats() {
         <div className="grid grid-cols-2 gap-px bg-neutral-200 sm:grid-cols-4">
           {[
             { value: "200M+", label: "Nigerians who deserve better" },
-            { value: "36", label: "States to cover" },
-            { value: "0", label: "Rumours tolerated" },
+            { value: "36+1", label: "States + FCT covered" },
+            { value: "2", label: "Confirmations to verify" },
             { value: "24/7", label: "Real-time coverage" },
           ].map(({ value, label }) => (
             <div key={label} className="bg-white px-6 py-8 sm:px-8 sm:py-10">
@@ -271,9 +269,9 @@ function Stats() {
   );
 }
 
-/* Waitlist  */
+/* Early Access / Waitlist */
 
-function Waitlist() {
+function Download() {
   return (
     <section id="waitlist" className="border-t border-neutral-200 px-5 py-16 sm:px-8 sm:py-24 bg-white">
       <div className="max-w-2xl">
@@ -283,8 +281,7 @@ function Waitlist() {
           <em className="not-italic text-neutral-400">when we launch.</em>
         </h2>
         <p className="text-neutral-600 mb-10 text-lg font-light leading-relaxed">
-          We're building in public. Join the waitlist and help shape Nigeria's
-          first community-powered safety platform.
+          We're in private testing. Join the waitlist to get early access and help shape Nigeria's first community-powered safety platform.
         </p>
         <WaitlistForm />
       </div>
@@ -299,7 +296,7 @@ function Footer() {
     <footer className="border-t border-neutral-200 bg-neutral-50 px-5 py-8 sm:px-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
         <Image src="/safiba-logo.svg" alt="Safiba" width={20} height={22} className="h-5 w-auto" />
-        <p className="text-xs text-neutral-500">Nigeria's Safety Awareness Platform</p>
+        <p className="text-xs text-neutral-500">Nigeria's Community-Powered Safety Platform</p>
       </div>
       <div className="flex items-center gap-6">
         <a href="#" className="text-xs text-neutral-500 tracking-widest uppercase hover:text-neutral-900 transition-colors">Twitter</a>
@@ -323,7 +320,7 @@ export default function Home() {
       <Features />
       <HowItWorks />
       <Stats />
-      <Waitlist />
+      <Download />
       <Footer />
     </div>
   );

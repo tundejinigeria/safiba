@@ -69,6 +69,7 @@ export const dynamo = DynamoDBDocumentClient.from(client, {
 
 export const TABLES = {
   WAITLIST: process.env.DYNAMODB_WAITLIST_TABLE ?? 'safiba-waitlist',
+  MAIN: process.env.DYNAMODB_TABLE ?? 'safiba-staging',
 } as const;
 
 // Helper function to refresh credentials manually if needed

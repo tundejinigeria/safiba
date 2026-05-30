@@ -1,88 +1,159 @@
 import Link from 'next/link';
-import { Mail, Users, AlertTriangle, Search, ArrowRight } from 'lucide-react';
-import { getWaitlistStats } from '@/src/actions/admin/waitlist';
+import { Users, AlertTriangle, Globe, Search, Siren, ArrowRight, TrendingUp, MapPin } from 'lucide-react';
+import { getDashboardStats } from '@/src/actions/admin/dashboard';
 
 export default async function AdminDashboard() {
-  const stats = await getWaitlistStats();
-
-  const sections = [
-    { href: '/admin/waitlist', label: 'Waitlist', count: stats.total, desc: 'Email signups', icon: Mail, color: 'text-emerald-600', border: 'border-emerald-200' },
-    { href: '/admin/users', label: 'Users', count: 0, desc: 'App users (coming soon)', icon: Users, color: 'text-blue-600', border: 'border-blue-200' },
-    { href: '/admin/incidents', label: 'Incidents', count: 0, desc: 'Reported incidents (coming soon)', icon: AlertTriangle, color: 'text-red-600', border: 'border-red-200' },
-    { href: '/admin/missing-persons', label: 'Missing Persons', count: 0, desc: 'Active cases (coming soon)', icon: Search, color: 'text-amber-600', border: 'border-amber-200' },
-  ];
+  const stats = await getDashboardStats();
 
   return (
-    <div className="px-4 py-6 sm:px-6 sm:py-8 max-w-5xl mx-auto">
+    <div className="px-4 py-6 sm:px-6 sm:py-8 max-w-6xl mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-neutral-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-neutral-500">Safiba platform overview</p>
+        <p className="mt-1 text-sm text-neutral-500">Safiba platform overview — real-time data</p>
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-10">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5 mb-10">
         {[
-          { label: 'Total signups', value: stats.total },
-          { label: 'Today', value: stats.today },
-          { label: 'This week', value: stats.thisWeek },
-          { label: 'App users', value: 0 },
-        ].map(({ label, value }) => (
-          <div key={label} className="border border-neutral-200 bg-white px-4 py-4 sm:px-5 shadow-sm">
-            <p className="text-2xl font-semibold text-neutral-900">{value}</p>
+          { label: 'Users', value: stats.totalUsers, color: 'text-indigo-600', href: '/admin/users' },
+          { label: 'Active Alerts', value: stats.activeAlerts, color: 'text-red-600', href: '/admin/incidents' },
+          { label: 'Communities', value: stats.totalCommunities, color: 'text-violet-600', href: '/admin/communities' },
+          { label: 'Missing Cases', value: stats.activeMissingCases, color: 'text-amber-600', href: '/admin/missing-persons' },
+          { label: 'SOS Today', value: stats.sosEventsToday, color: 'text-rose-600', href: '/admin/sos' },
+        ].map(({ label, value, color, href }) => (
+          <Link
+            key={label}
+            href={href}
+            className="border border-neutral-200 bg-white px-4 py-4 sm:px-5 shadow-sm hover:shadow-md transition-shadow"
+          >
+            <p className={`text-2xl font-semibold ${color}`}>{value}</p>
             <p className="text-xs tracking-widest uppercase text-neutral-500 mt-0.5">{label}</p>
-          </div>
+          </Link>
         ))}
       </div>
 
-      {/* Signup trend */}
-      <div className="border border-neutral-200 bg-white mb-8 shadow-sm">
-        <div className="px-5 py-4 border-b border-neutral-200">
-          <h2 className="text-sm font-medium text-neutral-900">Waitlist signups — last 14 days</h2>
-        </div>
-        <div className="px-5 py-5">
-          <div className="flex items-end gap-1 h-24">
-            {stats.byDay.map(({ date, count }) => {
-              const max = Math.max(...stats.byDay.map((d) => d.count), 1);
-              const height = Math.max((count / max) * 100, count > 0 ? 8 : 2);
-              return (
-                <div key={date} className="flex-1 flex flex-col items-center gap-1 group relative">
-                  <div
-                    className="w-full bg-emerald-500 hover:bg-emerald-400 transition-colors rounded-sm"
-                    style={{ height: `${height}%` }}
-                  />
-                  <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-neutral-800 text-white text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10 rounded">
-                    {date.slice(5)}: {count}
-                  </div>
-                </div>
-              );
-            })}
+      {/* Charts row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+        {/* User Growth Chart */}
+        <div className="border border-neutral-200 bg-white shadow-sm">
+          <div className="px-5 py-4 border-b border-neutral-200 flex items-center gap-2">
+            <TrendingUp size={14} className="text-indigo-500" />
+            <h2 className="text-sm font-medium text-neutral-900">User Growth — Last 30 Days</h2>
           </div>
-          <div className="flex justify-between mt-2">
-            <span className="text-xs text-neutral-400">{stats.byDay[0]?.date.slice(5)}</span>
-            <span className="text-xs text-neutral-400">{stats.byDay[stats.byDay.length - 1]?.date.slice(5)}</span>
+          <div className="px-5 py-5">
+            <div className="flex items-end gap-0.5 h-24">
+              {stats.userGrowth.map(({ date, count }) => {
+                const max = Math.max(...stats.userGrowth.map((d) => d.count), 1);
+                const height = Math.max((count / max) * 100, count > 0 ? 8 : 2);
+                return (
+                  <div key={date} className="flex-1 flex flex-col items-center group relative">
+                    <div
+                      className="w-full bg-indigo-500 hover:bg-indigo-400 transition-colors rounded-sm"
+                      style={{ height: `${height}%` }}
+                    />
+                    <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-neutral-800 text-white text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10 rounded">
+                      {date.slice(5)}: {count}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {stats.userGrowth.length > 0 && (
+              <div className="flex justify-between mt-2">
+                <span className="text-xs text-neutral-400">{stats.userGrowth[0]?.date.slice(5)}</span>
+                <span className="text-xs text-neutral-400">{stats.userGrowth[stats.userGrowth.length - 1]?.date.slice(5)}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Alert Trends Chart */}
+        <div className="border border-neutral-200 bg-white shadow-sm">
+          <div className="px-5 py-4 border-b border-neutral-200 flex items-center gap-2">
+            <AlertTriangle size={14} className="text-red-500" />
+            <h2 className="text-sm font-medium text-neutral-900">Alert Trends — Last 14 Days</h2>
+          </div>
+          <div className="px-5 py-5">
+            {stats.alertTrends.length > 0 ? (
+              <div className="space-y-2">
+                {/* Group by category and show counts */}
+                {Object.entries(
+                  stats.alertTrends.reduce((acc, { category, count }) => {
+                    acc[category] = (acc[category] || 0) + count;
+                    return acc;
+                  }, {} as Record<string, number>)
+                )
+                  .sort(([, a], [, b]) => b - a)
+                  .slice(0, 5)
+                  .map(([category, count]) => {
+                    const max = Math.max(...Object.values(
+                      stats.alertTrends.reduce((acc, { category: c, count: cnt }) => {
+                        acc[c] = (acc[c] || 0) + cnt;
+                        return acc;
+                      }, {} as Record<string, number>)
+                    ), 1);
+                    return (
+                      <div key={category} className="flex items-center gap-3">
+                        <span className="text-xs text-neutral-500 w-20 capitalize truncate">{category}</span>
+                        <div className="flex-1 h-4 bg-neutral-100 rounded-sm overflow-hidden">
+                          <div
+                            className="h-full bg-red-400 rounded-sm"
+                            style={{ width: `${(count / max) * 100}%` }}
+                          />
+                        </div>
+                        <span className="text-xs font-medium text-neutral-700 w-6 text-right">{count}</span>
+                      </div>
+                    );
+                  })}
+              </div>
+            ) : (
+              <p className="text-sm text-neutral-400 text-center py-8">No alert data yet</p>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Section cards */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {sections.map(({ href, label, count, desc, icon: Icon, color, border }) => (
+      {/* Top Areas */}
+      <div className="border border-neutral-200 bg-white shadow-sm mb-8">
+        <div className="px-5 py-4 border-b border-neutral-200 flex items-center gap-2">
+          <MapPin size={14} className="text-rose-500" />
+          <h2 className="text-sm font-medium text-neutral-900">Top Areas by Incidents</h2>
+        </div>
+        <div className="divide-y divide-neutral-100">
+          {stats.topAreas.length > 0 ? (
+            stats.topAreas.map(({ name, incidentCount }, i) => (
+              <div key={name} className="px-5 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-neutral-400 font-mono w-4">{i + 1}</span>
+                  <span className="text-sm text-neutral-700">{name}</span>
+                </div>
+                <span className="text-sm font-medium text-neutral-900">{incidentCount} incidents</span>
+              </div>
+            ))
+          ) : (
+            <p className="text-sm text-neutral-400 text-center py-8">No incident data yet</p>
+          )}
+        </div>
+      </div>
+
+      {/* Quick links */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { href: '/admin/users', label: 'Manage Users', icon: Users, color: 'text-indigo-500', border: 'border-indigo-200' },
+          { href: '/admin/incidents', label: 'Review Incidents', icon: AlertTriangle, color: 'text-red-500', border: 'border-red-200' },
+          { href: '/admin/communities', label: 'Communities', icon: Globe, color: 'text-violet-500', border: 'border-violet-200' },
+          { href: '/admin/missing-persons', label: 'Missing Persons', icon: Search, color: 'text-amber-500', border: 'border-amber-200' },
+        ].map(({ href, label, icon: Icon, color, border }) => (
           <Link
             key={href}
             href={href}
-            className={`border ${border} bg-white p-5 hover:shadow-sm transition-all`}
+            className={`border ${border} bg-white p-4 hover:shadow-sm transition-all flex items-center justify-between`}
           >
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3">
-                <Icon size={16} className={`${color} mt-0.5 shrink-0`} />
-                <div>
-                  <p className={`text-2xl font-semibold ${color}`}>{count}</p>
-                  <p className="text-sm font-medium text-neutral-900 mt-1">{label}</p>
-                  <p className="text-xs text-neutral-500 mt-0.5">{desc}</p>
-                </div>
-              </div>
-              <ArrowRight size={14} className="text-neutral-400 shrink-0 mt-1" />
+            <div className="flex items-center gap-2">
+              <Icon size={14} className={color} />
+              <span className="text-sm text-neutral-700">{label}</span>
             </div>
+            <ArrowRight size={12} className="text-neutral-400" />
           </Link>
         ))}
       </div>
