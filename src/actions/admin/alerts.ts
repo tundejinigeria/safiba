@@ -1,0 +1,173 @@
+'use server'
+
+import { QueryCommand, GetCommand, UpdateCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb'
+import { dynamo, TABLES } from '@/src/lib/aws/dynamodb'
+import { requireAdmin } from '@/src/lib/session'
+import { handleActionError } from '@/src/lib/admin/errors'
+import { buildPaginationParams, getNextCursor } from '@/src/lib/admin/pagination'
+import { clampTrustScore } from '@/src/lib/admin/trust-score'
+import type { Alert, PaginatedParams, PaginatedResult, ActionResult } from '@/src/types/admin'
+
+const TABLE = TABLES.MAIN
+const TRUST_PENALTY_FALSE_REPORT = -10
+
+// ── List Alerts ──────────────────────────────────────────────────────────────
+
+export async function getAlerts(params: PaginatedParams = {}): Promise<PaginatedResult<Alert>> {
+  const admin = await requireAdmin()
+  if (!admin) throw new Error('Unauthorized')
+
+  const { cursor, limit, filters } = params
+  const pagination = buildPaginationParams(cursor, limit)
+
+  const result = await dynamo.send(new QueryCommand({
+    TableName: TABLE,
+    IndexName: 'GSI3',
+    KeyConditionExpression: 'GSI3PK = :pk',
+    ExpressionAttributeValues: { ':pk': 'TYPE#ALERTS' },
+    ScanIndexForward: false,
+    ...pagination,
+  }))
+
+  let alerts = (result.Items || []).map(mapDynamoToAlert)
+
+  // Apply filters
+  if (filters?.search) {
+    const search = filters.search.toLowerCase()
+    alerts = alerts.filter(a =>
+      a.description.toLowerCase().includes(search) ||
+      (a.location.name || '').toLowerCase().includes(search) ||
+      a.category.toLowerCase().includes(search)
+    )
+  }
+  if (filters?.status && filters.status !== 'all') {
+    alerts = alerts.filter(a => a.status === filters.status)
+  }
+  if (filters?.severity && filters.severity !== 'all') {
+    alerts = alerts.filter(a => a.severity === filters.severity)
+  }
+  if (filters?.category && filters.category !== 'all') {
+    alerts = alerts.filter(a => a.category === filters.category)
+  }
+
+  return {
+    items: alerts,
+    nextCursor: getNextCursor(result.LastEvaluatedKey as any),
+    count: alerts.length,
+  }
+}
+
+// ── Get Single Alert ─────────────────────────────────────────────────────────
+
+export async function getAlert(alertId: string): Promise<Alert | null> {
+  const admin = await requireAdmin()
+  if (!admin) throw new Error('Unauthorized')
+
+  const result = await dynamo.send(new GetCommand({
+    TableName: TABLE,
+    Key: { PK: `ALERT#${alertId}`, SK: 'METADATA' },
+  }))
+
+  if (!result.Item) return null
+  return mapDynamoToAlert(result.Item)
+}
+
+// ── Update Alert Status ──────────────────────────────────────────────────────
+
+export async function updateAlertStatus(
+  alertId: string,
+  status: 'official_confirmed' | 'false_report' | 'resolved'
+): Promise<ActionResult<{ status: string }>> {
+  try {
+    const admin = await requireAdmin()
+    if (!admin) throw new Error('Unauthorized')
+
+    const alertResult = await dynamo.send(new GetCommand({
+      TableName: TABLE,
+      Key: { PK: `ALERT#${alertId}`, SK: 'METADATA' },
+    }))
+
+    if (!alertResult.Item) {
+      return { success: false, error: 'Alert not found' }
+    }
+
+    // Update status
+    await dynamo.send(new UpdateCommand({
+      TableName: TABLE,
+      Key: { PK: `ALERT#${alertId}`, SK: 'METADATA' },
+      UpdateExpression: 'SET #status = :status, GSI1PK = :gsi1pk',
+      ExpressionAttributeNames: { '#status': 'status' },
+      ExpressionAttributeValues: {
+        ':status': status,
+        ':gsi1pk': `ALERT_STATUS#${status}`,
+      },
+    }))
+
+    // If marking as false_report, penalize the creator's trust score
+    if (status === 'false_report' && alertResult.Item.user_id) {
+      try {
+        const profileResult = await dynamo.send(new GetCommand({
+          TableName: TABLE,
+          Key: { PK: `USER#${alertResult.Item.user_id}`, SK: 'PROFILE' },
+        }))
+        if (profileResult.Item) {
+          const currentScore = profileResult.Item.trust_score ?? 50
+          const newScore = clampTrustScore(currentScore, TRUST_PENALTY_FALSE_REPORT)
+          await dynamo.send(new UpdateCommand({
+            TableName: TABLE,
+            Key: { PK: `USER#${alertResult.Item.user_id}`, SK: 'PROFILE' },
+            UpdateExpression: 'SET trust_score = :ts',
+            ExpressionAttributeValues: { ':ts': newScore },
+          }))
+        }
+      } catch (err) {
+        console.error('Failed to apply trust penalty:', err)
+      }
+    }
+
+    return { success: true, data: { status } }
+  } catch (error) {
+    return handleActionError(error, 'updateAlertStatus')
+  }
+}
+
+// ── Delete Alert ─────────────────────────────────────────────────────────────
+
+export async function deleteAlert(alertId: string): Promise<ActionResult<null>> {
+  try {
+    const admin = await requireAdmin()
+    if (!admin) throw new Error('Unauthorized')
+
+    await dynamo.send(new DeleteCommand({
+      TableName: TABLE,
+      Key: { PK: `ALERT#${alertId}`, SK: 'METADATA' },
+    }))
+
+    return { success: true, data: null }
+  } catch (error) {
+    return handleActionError(error, 'deleteAlert')
+  }
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function mapDynamoToAlert(item: any): Alert {
+  return {
+    id: item.id || item.PK?.replace('ALERT#', '') || '',
+    category: item.category || 'other',
+    severity: item.severity || 'medium',
+    status: item.status || 'unverified',
+    description: item.description || '',
+    location: {
+      latitude: item.lat || 0,
+      longitude: item.lng || 0,
+      name: item.location || undefined,
+    },
+    photos: item.photos || item.media_urls || [],
+    creatorId: item.user_id || '',
+    creatorName: item.reporter_name || undefined,
+    confirmationCount: item.confirmed_count || 0,
+    falseReportCount: item.false_report_count || 0,
+    createdAt: item.created_at || item.GSI3SK || '',
+  }
+}
