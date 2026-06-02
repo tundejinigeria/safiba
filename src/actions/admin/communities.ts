@@ -25,17 +25,17 @@ export async function getCommunities(params: PaginatedParams = {}): Promise<Pagi
     ...pagination,
   }))
 
-  let communities = (result.Items || []).map((item: any): Community => ({
-    id: item.id || '',
-    name: item.name || '',
-    description: item.description || '',
-    type: item.community_type || 'other',
-    locationArea: item.location_area || '',
-    memberCount: item.member_count || 0,
-    verified: item.is_verified || false,
-    isPrivate: item.is_private || false,
-    createdAt: item.created_at || item.GSI3SK || '',
-    creatorId: item.created_by || '',
+  let communities = (result.Items || []).map((item: Record<string, unknown>): Community => ({
+    id: (item.id || '') as string,
+    name: (item.name || '') as string,
+    description: (item.description || '') as string,
+    type: (item.community_type || 'other') as string,
+    locationArea: (item.location_area || '') as string,
+    memberCount: (item.member_count as number) || 0,
+    verified: (item.is_verified as boolean) || false,
+    isPrivate: (item.is_private as boolean) || false,
+    createdAt: (item.created_at || item.GSI3SK || '') as string,
+    creatorId: (item.created_by || '') as string,
   }))
 
   if (filters?.type && filters.type !== 'all') {
@@ -55,7 +55,7 @@ export async function getCommunities(params: PaginatedParams = {}): Promise<Pagi
 
   return {
     items: communities,
-    nextCursor: getNextCursor(result.LastEvaluatedKey as any),
+    nextCursor: getNextCursor(result.LastEvaluatedKey),
     count: communities.length,
   }
 }
@@ -152,28 +152,28 @@ export async function getCommunityMembers(communityId: string) {
 
   // Fetch profiles for each member
   const enriched = await Promise.all(
-    members.map(async (m: any) => {
+    members.map(async (m: Record<string, unknown>) => {
       try {
         const profile = await dynamo.send(new GetCommand({
           TableName: TABLE,
           Key: { PK: `USER#${m.user_id}`, SK: 'PROFILE' },
         }))
         return {
-          id: m.id || '',
-          userId: m.user_id || '',
-          name: profile.Item?.full_name || '',
-          username: profile.Item?.username || '',
-          role: m.role || 'member',
-          joinedAt: m.joined_at || '',
+          id: (m.id || '') as string,
+          userId: (m.user_id || '') as string,
+          name: (profile.Item?.full_name || '') as string,
+          username: (profile.Item?.username || '') as string,
+          role: (m.role || 'member') as string,
+          joinedAt: (m.joined_at || '') as string,
         }
       } catch {
         return {
-          id: m.id || '',
-          userId: m.user_id || '',
+          id: (m.id || '') as string,
+          userId: (m.user_id || '') as string,
           name: 'Unknown',
           username: '',
-          role: m.role || 'member',
-          joinedAt: m.joined_at || '',
+          role: (m.role || 'member') as string,
+          joinedAt: (m.joined_at || '') as string,
         }
       }
     })

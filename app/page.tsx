@@ -15,23 +15,26 @@ import {
 } from "lucide-react";
 import WaitlistForm from "@/src/components/WaitlistForm";
 
-/* Nav */
-
+/* ─────────────────────────────────────────
+   NAV
+───────────────────────────────────────── */
 function Nav() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-4 sm:px-8 sm:py-5 bg-white/80 backdrop-blur-sm border-b border-neutral-200">
-      <Image src="/safiba-logo.svg" alt="Safiba" width={24} height={27} className="h-6 w-auto" />
-      <div className="flex items-center gap-6 sm:gap-8">
-        <a href="#features" className="hidden sm:block text-xs tracking-widest uppercase text-neutral-500 hover:text-neutral-900 transition-colors">
-          Features
-        </a>
-        <a href="#how-it-works" className="hidden sm:block text-xs tracking-widest uppercase text-neutral-500 hover:text-neutral-900 transition-colors">
-          How it works
-        </a>
-        <a href="#waitlist" className="text-xs tracking-widest uppercase text-neutral-900 border border-neutral-300 px-4 py-2 hover:bg-neutral-900 hover:text-white transition-colors">
-          Get Early Access
-        </a>
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 sm:px-12 bg-white/90 backdrop-blur-md border-b border-gray-100">
+      <div className="flex items-center gap-2.5">
+        <Image src="/safiba-logo.svg" alt="Safiba" width={26} height={30} className="h-6 w-auto" />
       </div>
+      <div className="hidden sm:flex items-center gap-9">
+        <a href="#features" className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">Features</a>
+        <a href="#how-it-works" className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">How it works</a>
+        <a href="#waitlist" className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors">Early Access</a>
+      </div>
+      <a
+        href="#waitlist"
+        className="text-[13px] font-semibold bg-orange-500 text-white px-5 py-2.5 rounded-full hover:bg-gray-700 transition-colors"
+      >
+        Get Early Access
+      </a>
     </nav>
   );
 }
@@ -40,51 +43,59 @@ function Nav() {
 
 function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col justify-end px-5 pb-14 pt-28 sm:px-8 sm:pb-20 overflow-hidden bg-white">
-      <div
-        className="absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0,0,0,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.3) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
+    <section className="relative min-h-screen flex flex-col justify-center pt-24 pb-16 px-6 sm:px-12 overflow-hidden bg-white">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_0%,rgba(251,146,60,0.06),transparent)] pointer-events-none" />
 
-      {/* Live indicator */}
-      <div className="absolute top-24 right-8 sm:top-28 sm:right-16 flex items-center gap-2">
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-        </span>
-        <span className="text-xs text-emerald-600 tracking-widest uppercase">Live Now</span>
-      </div>
+      <div className="relative max-w-5xl mx-auto w-full">
+        {/* Live pill */}
+        <div className="inline-flex items-center gap-2.5 mb-10 bg-orange-50 border border-orange-100 rounded-full px-4 py-1.5">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-400" />
+          </span>
+          <span className="text-orange-600 text-[12px] font-semibold tracking-wide">Nigeria&apos;s Community-Powered Safety Platform</span>
+        </div>
 
-      <div className="relative max-w-5xl">
-        <p className="mb-4 text-xs tracking-[0.3em] uppercase text-neutral-500">
-          Nigeria's Community-Powered Safety Platform
-        </p>
-        <h1 className="text-[clamp(2.8rem,9vw,8.5rem)] font-semibold leading-[0.88] tracking-tight text-neutral-900">
-          Know what's<br />
+        {/* Headline */}
+        <h1 className="text-[clamp(3rem,9vw,8.5rem)] font-extrabold leading-[0.88] tracking-[-0.03em] text-gray-900">
+          Know what&apos;s<br />
           happening<br />
-          <em className="not-italic text-neutral-400">around you.</em>
+          <span className="text-orange-400">around you.</span>
         </h1>
-        <p className="mt-8 text-lg sm:text-xl font-light leading-relaxed text-neutral-600 max-w-xl">
+
+        <p className="mt-8 text-[17px] sm:text-[19px] text-gray-500 leading-relaxed max-w-xl font-normal">
           Real-time safety alerts from your neighbourhood. Report incidents, find missing persons, trigger SOS — all verified by your community.
         </p>
+
+        {/* CTAs */}
         <div className="mt-10 flex flex-col sm:flex-row gap-3">
           <a
             href="#waitlist"
-            className="inline-flex items-center justify-center gap-2 bg-neutral-900 text-white px-8 py-3.5 text-sm font-medium hover:bg-neutral-700 transition-colors"
+            className="inline-flex items-center justify-center gap-2 bg-orange-500 text-white px-8 py-4 rounded-full text-[15px] font-semibold hover:bg-orange-600 transition-colors shadow-lg shadow-orange-200"
           >
             Get Early Access
-            <ArrowRight size={14} />
+            <ArrowRight size={15} />
           </a>
           <a
             href="#how-it-works"
-            className="inline-flex items-center justify-center gap-2 border border-neutral-300 text-neutral-700 px-8 py-3.5 text-sm hover:border-neutral-500 hover:text-neutral-900 transition-colors"
+            className="inline-flex items-center justify-center gap-2 bg-gray-50 text-gray-700 px-8 py-4 rounded-full text-[15px] font-medium hover:bg-gray-100 transition-colors border border-gray-200"
           >
             See how it works
           </a>
+        </div>
+
+        {/* Stats */}
+        <div className="mt-16 pt-8 border-t border-gray-100 flex flex-wrap gap-10">
+          {[
+            { v: "200M+", l: "Nigerians who deserve better" },
+            { v: "36+1", l: "States + FCT covered" },
+            { v: "24/7", l: "Real-time coverage" },
+          ].map(({ v, l }) => (
+            <div key={l}>
+              <p className="text-[22px] font-bold text-gray-900">{v}</p>
+              <p className="text-[12px] text-gray-400 mt-0.5">{l}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -95,22 +106,37 @@ function Hero() {
 
 function Problem() {
   return (
-    <section className="border-t border-neutral-200 px-5 py-16 sm:px-8 sm:py-24 bg-neutral-100">
-      <div className="max-w-6xl">
-        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">The Problem</p>
-        <h2 className="text-[clamp(1.8rem,5vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-neutral-900 max-w-3xl">
+    <section className="bg-gray-50 border-t border-gray-100 px-6 py-20 sm:px-12 sm:py-28">
+      <div className="max-w-5xl mx-auto">
+        <p className="text-orange-500 text-[13px] font-semibold mb-4 uppercase tracking-wider">The Problem</p>
+        <h2 className="text-[clamp(2rem,5vw,3.8rem)] font-extrabold leading-[0.92] tracking-tight text-gray-900 max-w-3xl mb-14">
           Safety information in Nigeria is broken.
         </h2>
-        <div className="mt-12 grid grid-cols-1 gap-px bg-neutral-200 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-px bg-gray-200 rounded-2xl overflow-hidden sm:grid-cols-3">
           {[
-            { stat: "Hours", label: "after incidents", desc: "News channels report long after events unfold — when it's already too late to act." },
-            { stat: "Rumours", label: "not facts", desc: "WhatsApp groups spread unverified information that causes panic and confusion." },
-            { stat: "Unanswered", label: "emergency lines", desc: "Police emergency numbers go unanswered when Nigerians need help the most." },
-          ].map(({ stat, label, desc }) => (
-            <div key={stat} className="bg-white p-7 sm:p-8">
-              <p className="text-3xl sm:text-4xl font-semibold text-neutral-900 mb-1">{stat}</p>
-              <p className="text-xs tracking-widest uppercase text-neutral-500 mb-4">{label}</p>
-              <p className="text-sm text-neutral-600 leading-relaxed">{desc}</p>
+            {
+              stat: "Hours",
+              label: "after incidents",
+              desc: "News channels report long after events unfold — when it's already too late to act.",
+              accent: "border-l-orange-400",
+            },
+            {
+              stat: "Rumours",
+              label: "not facts",
+              desc: "WhatsApp groups spread unverified information that causes panic and confusion.",
+              accent: "border-l-amber-400",
+            },
+            {
+              stat: "Unanswered",
+              label: "emergency lines",
+              desc: "Police emergency numbers go unanswered when Nigerians need help the most.",
+              accent: "border-l-red-400",
+            },
+          ].map(({ stat, label, desc, accent }) => (
+            <div key={stat} className={`bg-white p-8 border-l-4 ${accent}`}>
+              <p className="text-[2.5rem] font-extrabold text-gray-900 mb-1 leading-none">{stat}</p>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-5">{label}</p>
+              <p className="text-[14px] text-gray-500 leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>
@@ -126,50 +152,51 @@ const solutionFeatures = [
     icon: Bell,
     title: "Real-time Safety Alerts",
     desc: "Get notified about incidents near your home, work, or school — within seconds of being reported.",
-    iconColor: "text-blue-600",
   },
   {
     icon: Search,
     title: "Missing Persons Network",
     desc: "Report and find missing people with photos, last-seen location on map, and proximity-based notifications.",
-    iconColor: "text-amber-500",
   },
   {
     icon: AlertTriangle,
     title: "One-Tap SOS",
     desc: "Emergency panic button that shares your live location with your trusted contacts instantly.",
-    iconColor: "text-red-500",
   },
   {
     icon: ShieldCheck,
     title: "Community Verification",
     desc: "2 confirmations from nearby users = verified alert. False reports get flagged and hidden automatically.",
-    iconColor: "text-emerald-600",
   },
 ];
 
 function Solution() {
   return (
-    <section className="border-t border-neutral-200 px-5 py-16 sm:px-8 sm:py-24 bg-white">
-      <div className="max-w-6xl">
-        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">The Solution</p>
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+    <section className="bg-white border-t border-gray-100 px-6 py-20 sm:px-12 sm:py-28">
+      <div className="max-w-5xl mx-auto">
+        <p className="text-orange-500 text-[13px] font-semibold mb-4 uppercase tracking-wider">The Solution</p>
+        <div className="grid grid-cols-1 gap-14 lg:grid-cols-2">
           <div>
-            <h2 className="text-[clamp(1.8rem,4vw,3.5rem)] font-semibold leading-[0.95] tracking-tight text-neutral-900">
+            <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[0.92] tracking-tight text-gray-900">
               Your neighbourhood.<br />
-              <em className="not-italic text-neutral-400">Your safety network.</em>
+              <span className="text-gray-300">Your safety network.</span>
             </h2>
-            <p className="mt-6 text-lg font-light leading-relaxed text-neutral-600">
+            <p className="mt-6 text-[16px] leading-relaxed text-gray-500">
               Safiba connects you with people in your area to share real-time safety intelligence. No more relying on delayed news or unverified WhatsApp forwards.
             </p>
+            <a href="#waitlist" className="mt-8 inline-flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:gap-3 transition-all">
+              Join the waitlist <ArrowRight size={14} />
+            </a>
           </div>
-          <div className="flex flex-col gap-4">
-            {solutionFeatures.map(({ icon: Icon, title, desc, iconColor }) => (
-              <div key={title} className="flex gap-4 border border-neutral-200 bg-neutral-50 p-5 hover:border-neutral-300 transition-colors">
-                <Icon size={18} className={`shrink-0 mt-0.5 ${iconColor}`} />
+          <div className="flex flex-col gap-3">
+            {solutionFeatures.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex gap-4 rounded-2xl bg-gray-50 border border-gray-100 p-5 hover:border-orange-200 hover:bg-orange-50/30 transition-colors group">
+                <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center shrink-0 mt-0.5">
+                  <Icon size={16} className="text-orange-500" />
+                </div>
                 <div>
-                  <p className="text-sm font-semibold text-neutral-900 mb-1">{title}</p>
-                  <p className="text-sm text-neutral-500 leading-relaxed">{desc}</p>
+                  <p className="text-[14px] font-semibold text-gray-900 mb-1">{title}</p>
+                  <p className="text-[13px] text-gray-500 leading-relaxed">{desc}</p>
                 </div>
               </div>
             ))}
@@ -183,31 +210,34 @@ function Solution() {
 /* ── Features  */
 
 const featureList = [
-  { number: "01", icon: Users, title: "Safety Communities", desc: "Join or create neighbourhood groups — street, estate, school, or workplace. Share alerts with people who matter.", iconColor: "text-indigo-500" },
-  { number: "02", icon: Map, title: "Safety Map", desc: "See incidents on a live map with severity-colored markers. Check route safety before you travel.", iconColor: "text-rose-500" },
-  { number: "03", icon: MapPin, title: "Pin-Drop Location", desc: "Report incidents by dropping a pin on the exact location. No typing addresses — just move the map.", iconColor: "text-teal-500" },
-  { number: "04", icon: Navigation, title: "Route Safety Check", desc: "Planning a trip? Check if your route passes through areas with recent incidents before you leave.", iconColor: "text-violet-500" },
-  { number: "05", icon: Shield, title: "Trust Scores", desc: "Every user has a trust score. Accurate reports increase it. False reports decrease it. No more rumours.", iconColor: "text-orange-500" },
-  { number: "06", icon: CheckCircle, title: "2-Confirmation Verification", desc: "Alerts become 'verified' after 2 nearby users confirm. Unverified alerts show lower visual weight.", iconColor: "text-emerald-500" },
+  { number: "01", icon: Users, title: "Safety Communities", desc: "Join or create neighbourhood groups — street, estate, school, or workplace. Share alerts with people who matter." },
+  { number: "02", icon: Map, title: "Safety Map", desc: "See incidents on a live map with severity-colored markers. Check route safety before you travel." },
+  { number: "03", icon: MapPin, title: "Pin-Drop Location", desc: "Report incidents by dropping a pin on the exact location. No typing addresses — just move the map." },
+  { number: "04", icon: Navigation, title: "Route Safety Check", desc: "Planning a trip? Check if your route passes through areas with recent incidents before you leave." },
+  { number: "05", icon: Shield, title: "Trust Scores", desc: "Every user has a trust score. Accurate reports increase it. False reports decrease it. No more rumours." },
+  { number: "06", icon: CheckCircle, title: "2-Confirmation Verification", desc: "Alerts become 'verified' after 2 nearby users confirm. Unverified alerts show lower visual weight." },
 ];
 
 function Features() {
   return (
-    <section id="features" className="border-t border-neutral-200 px-5 py-16 sm:px-8 sm:py-24 bg-neutral-100">
-      <div className="max-w-6xl">
-        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">Features</p>
-        <h2 className="text-[clamp(1.8rem,4vw,3.5rem)] font-semibold leading-[0.95] tracking-tight text-neutral-900 mb-14">
-          Built for how Nigerians<br />actually live.
+    <section id="features" className="bg-gray-50 border-t border-gray-100 px-6 py-20 sm:px-12 sm:py-28">
+      <div className="max-w-5xl mx-auto">
+        <p className="text-orange-500 text-[13px] font-semibold mb-4 uppercase tracking-wider">Features</p>
+        <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[0.92] tracking-tight text-gray-900 mb-14">
+          Built for how Nigerians<br />
+          <span className="text-gray-400">actually live.</span>
         </h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {featureList.map(({ number, icon: Icon, title, desc, iconColor }) => (
-            <div key={number} className="border border-neutral-200 bg-white p-6 hover:border-neutral-300 hover:shadow-sm transition-all">
-              <div className="flex items-center gap-3 mb-4">
-                <Icon size={16} className={iconColor} />
-                <p className="text-xs text-neutral-400 font-mono">{number}</p>
+        <div className="grid grid-cols-1 gap-px bg-gray-200 rounded-2xl overflow-hidden sm:grid-cols-2 lg:grid-cols-3">
+          {featureList.map(({ number, icon: Icon, title, desc }) => (
+            <div key={number} className="bg-white p-7 hover:bg-orange-50/40 transition-colors group">
+              <div className="flex items-center justify-between mb-5">
+                <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
+                  <Icon size={16} className="text-orange-500" />
+                </div>
+                <span className="text-[11px] text-gray-300 font-mono">{number}</span>
               </div>
-              <h3 className="text-base font-semibold text-neutral-900 mb-2">{title}</h3>
-              <p className="text-sm text-neutral-500 leading-relaxed">{desc}</p>
+              <h3 className="text-[15px] font-semibold text-gray-900 mb-2">{title}</h3>
+              <p className="text-[13px] text-gray-500 leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>
@@ -220,23 +250,43 @@ function Features() {
 
 function HowItWorks() {
   return (
-    <section id="how-it-works" className="border-t border-neutral-200 px-5 py-16 sm:px-8 sm:py-24 bg-white">
-      <div className="max-w-6xl">
-        <p className="mb-6 text-xs tracking-[0.3em] uppercase text-neutral-500">How it works</p>
-        <h2 className="text-[clamp(1.8rem,4vw,3.5rem)] font-semibold leading-[0.95] tracking-tight text-neutral-900 mb-14">
+    <section id="how-it-works" className="bg-white border-t border-gray-100 px-6 py-20 sm:px-12 sm:py-28">
+      <div className="max-w-5xl mx-auto">
+        <p className="text-orange-500 text-[13px] font-semibold mb-4 uppercase tracking-wider">How it works</p>
+        <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[0.92] tracking-tight text-gray-900 mb-14">
           Simple. Fast. Trusted.
         </h2>
-        <div className="grid grid-cols-1 gap-px bg-neutral-200 sm:grid-cols-4">
+        <div className="grid grid-cols-1 gap-px bg-gray-200 rounded-2xl overflow-hidden sm:grid-cols-4">
           {[
-            { step: "1", title: "Add your locations", desc: "Pin your home, work, and places you care about on the map. Set your alert radius." },
-            { step: "2", title: "Get real-time alerts", desc: "See safety incidents happening near your locations — reported and verified by your community." },
-            { step: "3", title: "Report & confirm", desc: "See something? Drop a pin and report it. Others nearby confirm — 2 confirmations = verified." },
-            { step: "4", title: "Stay safe together", desc: "Join communities, check route safety, trigger SOS in emergencies. Safety in numbers." },
-          ].map(({ step, title, desc }) => (
-            <div key={step} className="bg-white p-6 sm:p-8">
-              <p className="text-4xl font-semibold text-neutral-200 mb-6 font-mono">{step}</p>
-              <h3 className="text-sm font-semibold text-neutral-900 mb-2">{title}</h3>
-              <p className="text-sm text-neutral-500 leading-relaxed">{desc}</p>
+            {
+              step: "1",
+              title: "Add your locations",
+              desc: "Pin your home, work, and places you care about on the map. Set your alert radius.",
+              color: "text-orange-400",
+            },
+            {
+              step: "2",
+              title: "Get real-time alerts",
+              desc: "See safety incidents happening near your locations — reported and verified by your community.",
+              color: "text-amber-400",
+            },
+            {
+              step: "3",
+              title: "Report & confirm",
+              desc: "See something? Drop a pin and report it. Others nearby confirm — 2 confirmations = verified.",
+              color: "text-orange-400",
+            },
+            {
+              step: "4",
+              title: "Stay safe together",
+              desc: "Join communities, check route safety, trigger SOS in emergencies. Safety in numbers.",
+              color: "text-amber-400",
+            },
+          ].map(({ step, title, desc, color }) => (
+            <div key={step} className="bg-white p-7 sm:p-8 hover:bg-orange-50/30 transition-colors group">
+              <p className={`text-[3.5rem] font-extrabold ${color} mb-6 font-mono leading-none opacity-50 group-hover:opacity-100 transition-opacity`}>{step}</p>
+              <h3 className="text-[14px] font-semibold text-gray-900 mb-2">{title}</h3>
+              <p className="text-[13px] text-gray-500 leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>
@@ -249,18 +299,18 @@ function HowItWorks() {
 
 function Stats() {
   return (
-    <section className="border-t border-neutral-200 px-5 py-16 sm:px-8 sm:py-24 bg-neutral-100">
-      <div className="max-w-6xl">
-        <div className="grid grid-cols-2 gap-px bg-neutral-200 sm:grid-cols-4">
+    <section className="bg-gray-50 border-t border-gray-100 px-6 py-16 sm:px-12 sm:py-20">
+      <div className="max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 gap-px bg-gray-200 rounded-2xl overflow-hidden sm:grid-cols-4">
           {[
             { value: "200M+", label: "Nigerians who deserve better" },
             { value: "36+1", label: "States + FCT covered" },
             { value: "2", label: "Confirmations to verify" },
             { value: "24/7", label: "Real-time coverage" },
           ].map(({ value, label }) => (
-            <div key={label} className="bg-white px-6 py-8 sm:px-8 sm:py-10">
-              <p className="text-3xl sm:text-4xl font-semibold text-neutral-900 mb-2">{value}</p>
-              <p className="text-xs text-neutral-500 leading-relaxed">{label}</p>
+            <div key={label} className="bg-white px-7 py-8 sm:px-8 sm:py-10">
+              <p className="text-[2rem] sm:text-[2.5rem] font-extrabold text-gray-900 mb-2 leading-none">{value}</p>
+              <p className="text-[13px] text-gray-400 leading-relaxed">{label}</p>
             </div>
           ))}
         </div>
@@ -271,19 +321,31 @@ function Stats() {
 
 /* Early Access / Waitlist */
 
-function Download() {
+function Waitlist() {
   return (
-    <section id="waitlist" className="border-t border-neutral-200 px-5 py-16 sm:px-8 sm:py-24 bg-white">
-      <div className="max-w-2xl">
-        <p className="mb-4 text-xs tracking-[0.3em] uppercase text-neutral-500">Early Access</p>
-        <h2 className="text-[clamp(2rem,5vw,4rem)] font-semibold leading-[0.95] tracking-tight text-neutral-900 mb-6">
+    <section id="waitlist" className="bg-white border-t border-gray-100 px-6 py-24 sm:px-12 sm:py-36">
+      <div className="max-w-2xl mx-auto text-center">
+        <p className="text-orange-500 text-[13px] font-semibold mb-4 uppercase tracking-wider">Early Access</p>
+        <h2 className="text-[clamp(2.4rem,7vw,6rem)] font-extrabold leading-[0.88] tracking-tight text-gray-900">
           Be first to know<br />
-          <em className="not-italic text-neutral-400">when we launch.</em>
+          <span className="text-orange-400">when we launch.</span>
         </h2>
-        <p className="text-neutral-600 mb-10 text-lg font-light leading-relaxed">
-          We're in private testing. Join the waitlist to get early access and help shape Nigeria's first community-powered safety platform.
+        <p className="mt-6 text-[16px] text-gray-500 leading-relaxed max-w-lg mx-auto">
+          We&apos;re in private testing. Join the waitlist to get early access and help shape Nigeria&apos;s first community-powered safety platform.
         </p>
-        <WaitlistForm />
+
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-5 text-[13px] text-gray-500">
+          {["Early access before public launch", "Shape the product with your feedback", "Free for individual users"].map((b) => (
+            <div key={b} className="flex items-center gap-2">
+              <CheckCircle size={13} className="text-green-500 shrink-0" />
+              {b}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-10 max-w-sm mx-auto">
+          <WaitlistForm />
+        </div>
       </div>
     </section>
   );
@@ -293,17 +355,19 @@ function Download() {
 
 function Footer() {
   return (
-    <footer className="border-t border-neutral-200 bg-neutral-50 px-5 py-8 sm:px-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-center gap-3">
-        <Image src="/safiba-logo.svg" alt="Safiba" width={20} height={22} className="h-5 w-auto" />
-        <p className="text-xs text-neutral-500">Nigeria's Community-Powered Safety Platform</p>
+    <footer className="bg-gray-50 border-t border-gray-100 px-6 py-10 sm:px-12">
+      <div className="max-w-5xl mx-auto flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2.5">
+          <Image src="/safiba-logo.svg" alt="Safiba" width={20} height={23} className="h-5 w-auto opacity-60" />
+          <span className="text-[13px] text-gray-400">Nigeria&apos;s Community-Powered Safety Platform</span>
+        </div>
+        <div className="flex items-center gap-7">
+          <a href="#" className="text-[13px] text-gray-400 hover:text-gray-900 transition-colors">Twitter</a>
+          <a href="#" className="text-[13px] text-gray-400 hover:text-gray-900 transition-colors">Instagram</a>
+          <a href="#" className="text-[13px] text-gray-400 hover:text-gray-900 transition-colors">Contact</a>
+        </div>
+        <p className="text-[13px] text-gray-300">© {new Date().getFullYear()} Safiba. All rights reserved.</p>
       </div>
-      <div className="flex items-center gap-6">
-        <a href="#" className="text-xs text-neutral-500 tracking-widest uppercase hover:text-neutral-900 transition-colors">Twitter</a>
-        <a href="#" className="text-xs text-neutral-500 tracking-widest uppercase hover:text-neutral-900 transition-colors">Instagram</a>
-        <a href="#" className="text-xs text-neutral-500 tracking-widest uppercase hover:text-neutral-900 transition-colors">Contact</a>
-      </div>
-      <p className="text-xs text-neutral-400">© {new Date().getFullYear()} Safiba. All rights reserved.</p>
     </footer>
   );
 }
@@ -312,15 +376,17 @@ function Footer() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-neutral-100 text-neutral-900">
+    <div className="min-h-screen bg-white text-gray-900">
       <Nav />
-      <Hero />
-      <Problem />
-      <Solution />
-      <Features />
-      <HowItWorks />
-      <Stats />
-      <Download />
+      <main>
+        <Hero />
+        <Problem />
+        <Solution />
+        <Features />
+        <HowItWorks />
+        <Stats />
+        <Waitlist />
+      </main>
       <Footer />
     </div>
   );

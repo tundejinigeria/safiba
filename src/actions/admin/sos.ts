@@ -22,20 +22,20 @@ export async function getSOSEvents(filters?: { active?: boolean }): Promise<Pagi
     Limit: 100,
   }))
 
-  let events = (result.Items || []).map((item: any): SOSEvent => ({
-    id: item.id || item.PK?.replace('SOS#', '') || '',
-    userId: item.user_id || '',
-    userName: item.user_name || undefined,
-    status: item.status || 'active',
+  let events = (result.Items || []).map((item: Record<string, unknown>): SOSEvent => ({
+    id: (item.id || (item.PK as string)?.replace('SOS#', '') || '') as string,
+    userId: (item.user_id || '') as string,
+    userName: (item.user_name as string) || undefined,
+    status: (item.status || 'active') as string,
     location: item.trigger_lat && item.trigger_lng ? {
-      latitude: item.trigger_lat,
-      longitude: item.trigger_lng,
-      address: item.trigger_address || undefined,
+      latitude: item.trigger_lat as number,
+      longitude: item.trigger_lng as number,
+      address: (item.trigger_address as string) || undefined,
     } : undefined,
     contactsNotified: Array.isArray(item.contacts_notified) ? item.contacts_notified.length : 0,
-    triggeredAt: item.triggered_at || item.created_at || '',
-    resolvedAt: item.resolved_at || undefined,
-    cancelledAt: item.cancelled_at || undefined,
+    triggeredAt: (item.triggered_at || item.created_at || '') as string,
+    resolvedAt: (item.resolved_at as string) || undefined,
+    cancelledAt: (item.cancelled_at as string) || undefined,
   }))
 
   // Sort by triggered time (newest first)

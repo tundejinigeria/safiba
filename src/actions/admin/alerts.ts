@@ -52,7 +52,7 @@ export async function getAlerts(params: PaginatedParams = {}): Promise<Paginated
 
   return {
     items: alerts,
-    nextCursor: getNextCursor(result.LastEvaluatedKey as any),
+    nextCursor: getNextCursor(result.LastEvaluatedKey),
     count: alerts.length,
   }
 }
@@ -151,23 +151,23 @@ export async function deleteAlert(alertId: string): Promise<ActionResult<null>> 
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function mapDynamoToAlert(item: any): Alert {
+function mapDynamoToAlert(item: Record<string, unknown>): Alert {
   return {
-    id: item.id || item.PK?.replace('ALERT#', '') || '',
-    category: item.category || 'other',
-    severity: item.severity || 'medium',
-    status: item.status || 'unverified',
-    description: item.description || '',
+    id: (item.id || (item.PK as string)?.replace('ALERT#', '') || '') as string,
+    category: (item.category || 'other') as string,
+    severity: (item.severity || 'medium') as string,
+    status: (item.status || 'unverified') as string,
+    description: (item.description || '') as string,
     location: {
-      latitude: item.lat || 0,
-      longitude: item.lng || 0,
-      name: item.location || undefined,
+      latitude: (item.lat as number) || 0,
+      longitude: (item.lng as number) || 0,
+      name: (item.location as string) || undefined,
     },
-    photos: item.photos || item.media_urls || [],
-    creatorId: item.user_id || '',
-    creatorName: item.reporter_name || undefined,
-    confirmationCount: item.confirmed_count || 0,
-    falseReportCount: item.false_report_count || 0,
-    createdAt: item.created_at || item.GSI3SK || '',
+    photos: (item.photos || item.media_urls || []) as string[],
+    creatorId: (item.user_id || '') as string,
+    creatorName: (item.reporter_name as string) || undefined,
+    confirmationCount: (item.confirmed_count as number) || 0,
+    falseReportCount: (item.false_report_count as number) || 0,
+    createdAt: (item.created_at || item.GSI3SK || '') as string,
   }
 }

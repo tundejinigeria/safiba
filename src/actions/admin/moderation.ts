@@ -25,18 +25,18 @@ export async function getModerationQueue(): Promise<ModerationItem[]> {
     }))
 
     const flaggedAlerts = (alertsResult.Items || []).filter(
-      (item: any) => item.status === 'false_report' || (item.false_report_count || 0) >= 1
+      (item: Record<string, unknown>) => item.status === 'false_report' || ((item.false_report_count as number) || 0) >= 1
     )
 
-    flaggedAlerts.forEach((alert: any) => {
+    flaggedAlerts.forEach((alert: Record<string, unknown>) => {
       items.push({
         type: 'alert',
-        id: alert.id || '',
-        title: `${alert.category || 'Alert'}: ${(alert.description || '').slice(0, 50)}...`,
+        id: (alert.id || '') as string,
+        title: `${(alert.category as string) || 'Alert'}: ${((alert.description as string) || '').slice(0, 50)}...`,
         reason: alert.status === 'false_report'
-          ? `Marked as false report (${alert.false_report_count || 0} reports)`
-          : `${alert.false_report_count || 0} report(s) received`,
-        createdAt: alert.created_at || '',
+          ? `Marked as false report (${(alert.false_report_count as number) || 0} reports)`
+          : `${(alert.false_report_count as number) || 0} report(s) received`,
+        createdAt: (alert.created_at || '') as string,
       })
     })
   } catch (err) {
@@ -54,16 +54,16 @@ export async function getModerationQueue(): Promise<ModerationItem[]> {
     }))
 
     const lowTrustUsers = (usersResult.Items || []).filter(
-      (item: any) => (item.trust_score ?? 50) < 30
+      (item: Record<string, unknown>) => ((item.trust_score as number) ?? 50) < 30
     )
 
-    lowTrustUsers.forEach((user: any) => {
+    lowTrustUsers.forEach((user: Record<string, unknown>) => {
       items.push({
         type: 'user',
-        id: user.id || user.PK?.replace('USER#', '') || '',
-        title: user.full_name || user.username || 'Unknown user',
-        reason: `Trust score: ${user.trust_score ?? 0}/100`,
-        createdAt: user.created_at || '',
+        id: (user.id || (user.PK as string)?.replace('USER#', '') || '') as string,
+        title: (user.full_name || user.username || 'Unknown user') as string,
+        reason: `Trust score: ${(user.trust_score as number) ?? 0}/100`,
+        createdAt: (user.created_at || '') as string,
       })
     })
   } catch (err) {
@@ -81,16 +81,16 @@ export async function getModerationQueue(): Promise<ModerationItem[]> {
     }))
 
     const unverified = (communitiesResult.Items || []).filter(
-      (item: any) => !item.is_verified
+      (item: Record<string, unknown>) => !item.is_verified
     )
 
-    unverified.forEach((community: any) => {
+    unverified.forEach((community: Record<string, unknown>) => {
       items.push({
         type: 'community',
-        id: community.id || '',
-        title: community.name || 'Unknown community',
+        id: (community.id || '') as string,
+        title: (community.name || 'Unknown community') as string,
         reason: 'Pending verification',
-        createdAt: community.created_at || '',
+        createdAt: (community.created_at || '') as string,
       })
     })
   } catch (err) {

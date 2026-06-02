@@ -86,13 +86,13 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
         </div>
         {alerts.length > 0 ? (
           <div className="divide-y divide-neutral-100">
-            {alerts.slice(0, 10).map((alert: any) => (
-              <div key={alert.alert_id || alert.SK} className="px-5 py-3 flex items-center justify-between">
+            {alerts.slice(0, 10).map((alert: Record<string, unknown>) => (
+              <div key={(alert.alert_id || alert.SK) as string} className="px-5 py-3 flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-700">{alert.category || 'Alert'}</p>
-                  <p className="text-xs text-neutral-500">{alert.created_at ? new Date(alert.created_at).toLocaleDateString() : '—'}</p>
+                  <p className="text-sm text-neutral-700">{(alert.category as string) || 'Alert'}</p>
+                  <p className="text-xs text-neutral-500">{alert.created_at ? new Date(alert.created_at as string).toLocaleDateString() : '—'}</p>
                 </div>
-                <StatusBadge status={alert.status || 'unverified'} />
+                <StatusBadge status={(alert.status as string) || 'unverified'} />
               </div>
             ))}
           </div>
@@ -109,14 +109,14 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
         </div>
         {communities.length > 0 ? (
           <div className="divide-y divide-neutral-100">
-            {communities.map((c: any) => (
-              <div key={c.id} className="px-5 py-3 flex items-center justify-between">
+            {communities.map((c: Record<string, unknown>) => (
+              <div key={c.id as string} className="px-5 py-3 flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-700">{c.name}</p>
-                  <p className="text-xs text-neutral-500 capitalize">{c.role}</p>
+                  <p className="text-sm text-neutral-700">{c.name as string}</p>
+                  <p className="text-xs text-neutral-500 capitalize">{c.role as string}</p>
                 </div>
                 <p className="text-xs text-neutral-400">
-                  {c.joinedAt ? new Date(c.joinedAt).toLocaleDateString() : '—'}
+                  {c.joinedAt ? new Date(c.joinedAt as string).toLocaleDateString() : '—'}
                 </p>
               </div>
             ))}

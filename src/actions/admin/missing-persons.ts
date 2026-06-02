@@ -25,24 +25,24 @@ export async function getMissingPersons(params: PaginatedParams = {}): Promise<P
     ...pagination,
   }))
 
-  let cases = (result.Items || []).map((item: any): MissingPerson => ({
-    id: item.id || '',
-    caseId: item.case_id || '',
-    name: item.full_name || '',
-    age: item.age || undefined,
-    gender: item.gender || undefined,
-    description: item.description || '',
-    photos: item.photos || [],
+  let cases = (result.Items || []).map((item: Record<string, unknown>): MissingPerson => ({
+    id: (item.id || '') as string,
+    caseId: (item.case_id || '') as string,
+    name: (item.full_name || '') as string,
+    age: item.age as number | undefined,
+    gender: item.gender as string | undefined,
+    description: (item.description || '') as string,
+    photos: (item.photos || []) as string[],
     lastSeenLocation: {
-      latitude: item.last_seen_lat || 0,
-      longitude: item.last_seen_lng || 0,
-      name: item.last_seen_address || undefined,
+      latitude: (item.last_seen_lat as number) || 0,
+      longitude: (item.last_seen_lng as number) || 0,
+      name: (item.last_seen_address as string) || undefined,
     },
-    lastSeenDate: item.last_seen_at || '',
-    status: item.status || 'active',
-    reporterId: item.reporter_id || '',
-    contactNumber: item.contact_number || '',
-    createdAt: item.created_at || item.GSI3SK || '',
+    lastSeenDate: (item.last_seen_at || '') as string,
+    status: (item.status || 'active') as string,
+    reporterId: (item.reporter_id || '') as string,
+    contactNumber: (item.contact_number || '') as string,
+    createdAt: (item.created_at || item.GSI3SK || '') as string,
   }))
 
   if (filters?.status && filters.status !== 'all') {
@@ -60,7 +60,7 @@ export async function getMissingPersons(params: PaginatedParams = {}): Promise<P
 
   return {
     items: cases,
-    nextCursor: getNextCursor(result.LastEvaluatedKey as any),
+    nextCursor: getNextCursor(result.LastEvaluatedKey),
     count: cases.length,
   }
 }

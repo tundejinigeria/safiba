@@ -64,11 +64,11 @@ export async function POST(request: Request) {
       idToken: tokens.IdToken,
       expiresIn: tokens.ExpiresIn,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Sign-in error:', error);
     
     return NextResponse.json(
-      { error: error.message || 'Authentication failed' },
+      { error: error instanceof Error ? error.message : 'Authentication failed' },
       { status: 400 }
     );
   }

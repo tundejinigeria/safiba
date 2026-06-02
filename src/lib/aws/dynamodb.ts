@@ -77,9 +77,9 @@ export const refreshCredentials = async () => {
   try {
     console.log('🔄 Manually refreshing AWS credentials...');
     // Force credential refresh by clearing the cached credentials
-    // @ts-ignore - Accessing private property for refresh
+    // @ts-expect-error - Accessing private property for refresh
     if (client.config.credentials?.refresh) {
-      // @ts-ignore
+      // @ts-expect-error - Accessing private property for refresh
       await client.config.credentials.refresh();
     }
     console.log('✅ Credentials refreshed successfully');

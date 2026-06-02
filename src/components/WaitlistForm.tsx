@@ -14,10 +14,10 @@ export default function WaitlistForm() {
 
   if (state.success) {
     return (
-      <div className="border border-emerald-200 bg-emerald-50 px-6 py-5">
-        <p className="text-emerald-700 font-medium mb-1">You're on the list. ✓</p>
-        <p className="text-sm text-emerald-600">
-          We'll reach out when Safiba launches. Stay safe out there.
+      <div className="rounded-2xl border border-green-200 bg-green-50 px-6 py-5 text-center">
+        <p className="text-green-700 font-semibold mb-1">You&apos;re on the list. ✓</p>
+        <p className="text-[13px] text-green-600/70">
+          We&apos;ll reach out when Safiba launches. Stay safe out there.
         </p>
       </div>
     );
@@ -25,27 +25,25 @@ export default function WaitlistForm() {
 
   return (
     <form action={action} className="flex flex-col gap-3">
-      <div className="flex flex-col sm:flex-row gap-3">
-        <input
-          type="email"
-          name="email"
-          required
-          placeholder="your@email.com"
-          className="flex-1 bg-white border border-neutral-300 px-4 py-3 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-200 transition-colors"
-        />
-        <button
-          type="submit"
-          disabled={pending}
-          className="bg-neutral-900 text-white px-8 py-3 text-sm font-medium hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
-        >
-          {pending ? 'Joining…' : 'Join Waitlist'}
-        </button>
-      </div>
+      <input
+        type="email"
+        name="email"
+        required
+        placeholder="your@email.com"
+        className="w-full bg-gray-50 border border-gray-200 rounded-full px-5 py-4 text-[15px] text-gray-900 placeholder-gray-400 outline-none focus:border-orange-300 focus:ring-2 focus:ring-orange-100 transition-all"
+      />
+      <button
+        type="submit"
+        disabled={pending}
+        className="w-full bg-orange-500 text-white px-8 py-4 rounded-full text-[15px] font-semibold hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-orange-200"
+      >
+        {pending ? 'Joining…' : 'Join Waitlist'}
+      </button>
       {!state.success && state.error && (
-        <p className="text-xs text-red-600">{state.error}</p>
+        <p className="text-[13px] text-red-500 text-center">{state.error}</p>
       )}
-      <p className="text-xs text-neutral-500">
-        No spam. No noise. Just the launch date and early access.
+      <p className="text-[12px] text-gray-400 text-center">
+        No spam. Just the launch date and early access.
       </p>
     </form>
   );

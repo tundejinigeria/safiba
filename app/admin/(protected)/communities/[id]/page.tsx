@@ -68,25 +68,25 @@ export default async function CommunityDetailPage({ params }: { params: Promise<
         </div>
         {members.length > 0 ? (
           <div className="divide-y divide-neutral-100">
-            {members.slice(0, 20).map((member: any) => (
-              <div key={member.id || member.userId} className="px-5 py-3 flex items-center justify-between">
+            {members.slice(0, 20).map((member: Record<string, unknown>) => (
+              <div key={(member.id || member.userId) as string} className="px-5 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-neutral-100 rounded-full flex items-center justify-center">
                     <span className="text-xs font-medium text-neutral-600">
-                      {(member.name || 'U')[0].toUpperCase()}
+                      {((member.name as string) || 'U')[0].toUpperCase()}
                     </span>
                   </div>
                   <div>
-                    <Link href={`/admin/users/${member.userId}`} className="text-sm text-neutral-700 hover:text-blue-600">
-                      {member.name || 'Unknown'}
+                    <Link href={`/admin/users/${member.userId as string}`} className="text-sm text-neutral-700 hover:text-blue-600">
+                      {(member.name as string) || 'Unknown'}
                     </Link>
-                    {member.username && <p className="text-xs text-neutral-500">@{member.username}</p>}
+                    {member.username && <p className="text-xs text-neutral-500">@{member.username as string}</p>}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-neutral-500 capitalize px-2 py-0.5 bg-neutral-100">{member.role}</span>
+                  <span className="text-xs text-neutral-500 capitalize px-2 py-0.5 bg-neutral-100">{member.role as string}</span>
                   <span className="text-xs text-neutral-400">
-                    {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString() : ''}
+                    {member.joinedAt ? new Date(member.joinedAt as string).toLocaleDateString() : ''}
                   </span>
                 </div>
               </div>

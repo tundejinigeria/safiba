@@ -152,11 +152,11 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   const topAreas = await getTopAreas()
 
   return {
-    totalUsers: (usersResult as any).Count || 0,
-    activeAlerts: (alertsResult as any).Count || 0,
-    totalCommunities: (communitiesResult as any).Count || 0,
-    activeMissingCases: (missingResult as any).Count || 0,
-    sosEventsToday: (sosResult as any).Count || 0,
+    totalUsers: (usersResult as { Count?: number }).Count || 0,
+    activeAlerts: (alertsResult as { Count?: number }).Count || 0,
+    totalCommunities: (communitiesResult as { Count?: number }).Count || 0,
+    activeMissingCases: (missingResult as { Count?: number }).Count || 0,
+    sosEventsToday: (sosResult as { Count?: number }).Count || 0,
     userGrowth,
     alertTrends,
     topAreas,
@@ -187,8 +187,8 @@ async function getUserGrowth(): Promise<{ date: string; count: number }[]> {
     }
 
     // Count users by creation date
-    users.forEach((user: any) => {
-      const date = (user.created_at || user.GSI3SK || '').split('T')[0]
+    users.forEach((user: Record<string, unknown>) => {
+      const date = ((user.created_at || user.GSI3SK || '') as string).split('T')[0]
       if (date && countByDate[date] !== undefined) {
         countByDate[date]++
       }
@@ -224,9 +224,9 @@ async function getAlertTrends(): Promise<{ date: string; category: string; count
     const cutoff = new Date()
     cutoff.setDate(cutoff.getDate() - 14)
 
-    alerts.forEach((alert: any) => {
-      const date = (alert.created_at || alert.GSI3SK || '').split('T')[0]
-      const category = alert.category || 'other'
+    alerts.forEach((alert: Record<string, unknown>) => {
+      const date = ((alert.created_at || alert.GSI3SK || '') as string).split('T')[0]
+      const category = (alert.category as string) || 'other'
       if (date && new Date(date) >= cutoff) {
         const key = `${date}|${category}`
         countByDateCategory[key] = (countByDateCategory[key] || 0) + 1
@@ -258,8 +258,8 @@ async function getTopAreas(): Promise<{ name: string; incidentCount: number }[]>
     const alerts = alertsResult.Items || []
     const countByArea: Record<string, number> = {}
 
-    alerts.forEach((alert: any) => {
-      const location = alert.location || 'Unknown'
+    alerts.forEach((alert: Record<string, unknown>) => {
+      const location = (alert.location as string) || 'Unknown'
       // Extract area name (first part before comma)
       const area = location.split(',')[0].trim() || 'Unknown'
       if (area !== 'Unknown') {

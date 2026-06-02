@@ -73,7 +73,7 @@ export async function getUsers(params: PaginatedParams = {}): Promise<PaginatedR
 
   return {
     items: users,
-    nextCursor: getNextCursor(result.LastEvaluatedKey as any),
+    nextCursor: getNextCursor(result.LastEvaluatedKey),
     count: users.length,
   }
 }
@@ -134,7 +134,7 @@ export async function getUserCommunities(userId: string) {
 
   // Fetch community names
   const communities = await Promise.all(
-    memberships.map(async (m: any) => {
+    memberships.map(async (m: Record<string, unknown>) => {
       try {
         const communityResult = await dynamo.send(new GetCommand({
           TableName: TABLE,
@@ -227,17 +227,17 @@ export async function updateUserStatus(
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function mapDynamoToUser(item: any): AdminUser {
+function mapDynamoToUser(item: Record<string, unknown>): AdminUser {
   return {
-    id: item.id || item.PK?.replace('USER#', '') || '',
-    name: item.full_name || '',
-    username: item.username || '',
-    email: item.email || '',
-    phone: item.phone_number || item.phone || '',
-    trustScore: item.trust_score ?? 50,
-    role: item.role || 'user',
-    status: item.account_status || 'active',
-    createdAt: item.created_at || item.GSI3SK || '',
-    profilePhoto: item.avatar_url || undefined,
+    id: (item.id || (item.PK as string)?.replace('USER#', '') || '') as string,
+    name: (item.full_name || '') as string,
+    username: (item.username || '') as string,
+    email: (item.email || '') as string,
+    phone: (item.phone_number || item.phone || '') as string,
+    trustScore: (item.trust_score as number) ?? 50,
+    role: (item.role || 'user') as string,
+    status: (item.account_status || 'active') as string,
+    createdAt: (item.created_at || item.GSI3SK || '') as string,
+    profilePhoto: (item.avatar_url as string | undefined),
   }
 }

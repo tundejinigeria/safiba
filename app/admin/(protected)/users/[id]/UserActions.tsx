@@ -121,7 +121,7 @@ export function UserActions({ userId, currentStatus, currentTrustScore }: UserAc
         }
         variant={confirmAction?.type === 'ban' ? 'danger' : confirmAction?.type === 'suspend' ? 'warning' : 'default'}
         confirmLabel={confirmAction?.type === 'ban' ? 'Ban User' : confirmAction?.type === 'suspend' ? 'Suspend' : 'Reactivate'}
-        onConfirm={() => handleStatusChange(confirmAction!.status as any)}
+        onConfirm={() => handleStatusChange(confirmAction!.status as 'active' | 'suspended' | 'banned')}
         onCancel={() => setConfirmAction(null)}
         loading={isPending}
       />
