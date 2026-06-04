@@ -6,7 +6,7 @@ import { requireAdmin } from '@/src/lib/session'
 import { handleActionError } from '@/src/lib/admin/errors'
 import { buildPaginationParams, getNextCursor } from '@/src/lib/admin/pagination'
 import { clampTrustScore } from '@/src/lib/admin/trust-score'
-import type { AdminUser, PaginatedParams, PaginatedResult, ActionResult } from '@/src/types/admin'
+import type { AdminUser, UserRole, UserStatus, PaginatedParams, PaginatedResult, ActionResult } from '@/src/types/admin'
 
 const TABLE = TABLES.MAIN
 
@@ -235,8 +235,8 @@ function mapDynamoToUser(item: Record<string, unknown>): AdminUser {
     email: (item.email || '') as string,
     phone: (item.phone_number || item.phone || '') as string,
     trustScore: (item.trust_score as number) ?? 50,
-    role: (item.role || 'user') as string,
-    status: (item.account_status || 'active') as string,
+    role: (item.role || 'user') as UserRole,
+    status: (item.account_status || 'active') as UserStatus,
     createdAt: (item.created_at || item.GSI3SK || '') as string,
     profilePhoto: (item.avatar_url as string | undefined),
   }

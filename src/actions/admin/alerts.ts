@@ -6,7 +6,7 @@ import { requireAdmin } from '@/src/lib/session'
 import { handleActionError } from '@/src/lib/admin/errors'
 import { buildPaginationParams, getNextCursor } from '@/src/lib/admin/pagination'
 import { clampTrustScore } from '@/src/lib/admin/trust-score'
-import type { Alert, PaginatedParams, PaginatedResult, ActionResult } from '@/src/types/admin'
+import type { Alert, PaginatedParams, PaginatedResult, ActionResult, AlertSeverity } from '@/src/types/admin'
 
 const TABLE = TABLES.MAIN
 const TRUST_PENALTY_FALSE_REPORT = -10
@@ -152,11 +152,30 @@ export async function deleteAlert(alertId: string): Promise<ActionResult<null>> 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function mapDynamoToAlert(item: Record<string, unknown>): Alert {
+  // Helper function to safely cast severity
+  const mapSeverity = (value: unknown): AlertSeverity => {
+    const severity = (value as string) || 'medium'
+    // Validate that it's a valid severity value
+    if (severity === 'low' || severity === 'medium' || severity === 'high' || severity === 'critical') {
+      return severity
+    }
+    return 'medium' // default fallback
+  }
+
+  // Helper function to safely cast status
+  const mapStatus = (value: unknown): Alert['status'] => {
+    const status = (value as string) || 'unverified'
+    if (status === 'unverified' || status === 'official_confirmed' || status === 'false_report' || status === 'resolved') {
+      return status
+    }
+    return 'unverified'
+  }
+
   return {
     id: (item.id || (item.PK as string)?.replace('ALERT#', '') || '') as string,
     category: (item.category || 'other') as string,
-    severity: (item.severity || 'medium') as string,
-    status: (item.status || 'unverified') as string,
+    severity: mapSeverity(item.severity), // Fixed: properly typed as AlertSeverity
+    status: mapStatus(item.status), // Fixed: properly typed as Alert['status']
     description: (item.description || '') as string,
     location: {
       latitude: (item.lat as number) || 0,

@@ -26,7 +26,7 @@ export async function getSOSEvents(filters?: { active?: boolean }): Promise<Pagi
     id: (item.id || (item.PK as string)?.replace('SOS#', '') || '') as string,
     userId: (item.user_id || '') as string,
     userName: (item.user_name as string) || undefined,
-    status: (item.status || 'active') as string,
+    status: (item.status || 'active') as SOSEvent['status'],
     location: item.trigger_lat && item.trigger_lng ? {
       latitude: item.trigger_lat as number,
       longitude: item.trigger_lng as number,

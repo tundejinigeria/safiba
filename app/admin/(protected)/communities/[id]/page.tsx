@@ -1,8 +1,18 @@
 import Link from 'next/link';
-import { ArrowLeft, Users, CheckCircle, XCircle, Trash2 } from 'lucide-react';
+import { ArrowLeft, Users } from 'lucide-react';
 import { getCommunity, getCommunityMembers } from '@/src/actions/admin/communities';
 import { StatusBadge } from '@/src/components/admin/StatusBadge';
 import { CommunityActions } from './CommunityActions';
+
+// Define the member type
+interface CommunityMember {
+  id: string;
+  userId: string;
+  name: string;
+  username?: string;
+  role: string;
+  joinedAt?: string;
+}
 
 export default async function CommunityDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -19,6 +29,9 @@ export default async function CommunityDetailPage({ params }: { params: Promise<
       </div>
     );
   }
+
+  // Type assertion for members if getCommunityMembers returns unknown[]
+  const typedMembers = members as CommunityMember[];
 
   return (
     <div className="px-4 py-6 sm:px-6 sm:py-8 max-w-4xl mx-auto">
@@ -64,36 +77,38 @@ export default async function CommunityDetailPage({ params }: { params: Promise<
       <div className="border border-neutral-200 bg-white mt-6">
         <div className="px-5 py-4 border-b border-neutral-200 flex items-center gap-2">
           <Users size={14} className="text-indigo-500" />
-          <h2 className="text-sm font-medium text-neutral-900">Members ({members.length})</h2>
+          <h2 className="text-sm font-medium text-neutral-900">Members ({typedMembers.length})</h2>
         </div>
-        {members.length > 0 ? (
+        {typedMembers.length > 0 ? (
           <div className="divide-y divide-neutral-100">
-            {members.slice(0, 20).map((member: Record<string, unknown>) => (
-              <div key={(member.id || member.userId) as string} className="px-5 py-3 flex items-center justify-between">
+            {typedMembers.slice(0, 20).map((member) => (
+              <div key={member.id || member.userId} className="px-5 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-neutral-100 rounded-full flex items-center justify-center">
                     <span className="text-xs font-medium text-neutral-600">
-                      {((member.name as string) || 'U')[0].toUpperCase()}
+                      {(member.name || 'U')[0].toUpperCase()}
                     </span>
                   </div>
                   <div>
-                    <Link href={`/admin/users/${member.userId as string}`} className="text-sm text-neutral-700 hover:text-blue-600">
-                      {(member.name as string) || 'Unknown'}
+                    <Link href={`/admin/users/${member.userId}`} className="text-sm text-neutral-700 hover:text-blue-600">
+                      {member.name || 'Unknown'}
                     </Link>
-                    {member.username && <p className="text-xs text-neutral-500">@{member.username as string}</p>}
+                    {member.username && (
+                      <p className="text-xs text-neutral-500">@{member.username}</p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-neutral-500 capitalize px-2 py-0.5 bg-neutral-100">{member.role as string}</span>
+                  <span className="text-xs text-neutral-500 capitalize px-2 py-0.5 bg-neutral-100">{member.role}</span>
                   <span className="text-xs text-neutral-400">
-                    {member.joinedAt ? new Date(member.joinedAt as string).toLocaleDateString() : ''}
+                    {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString() : ''}
                   </span>
                 </div>
               </div>
             ))}
-            {members.length > 20 && (
+            {typedMembers.length > 20 && (
               <p className="px-5 py-3 text-xs text-neutral-400 text-center">
-                Showing 20 of {members.length} members
+                Showing 20 of {typedMembers.length} members
               </p>
             )}
           </div>

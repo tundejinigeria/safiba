@@ -159,3 +159,58 @@ export interface DashboardStats {
   alertTrends: { date: string; category: string; count: number }[]
   topAreas: { name: string; incidentCount: number }[]
 }
+
+// ── Member Reports ───────────────────────────────────────────────────────────
+
+export type ReportCategory = 'harassment' | 'spam' | 'threats' | 'inappropriate_behavior' | 'impersonation' | 'scam' | 'other'
+export type ReportStatus = 'pending' | 'under_review' | 'resolved' | 'dismissed'
+export type EnforcementActionType = 'warn' | 'suspend' | 'ban'
+
+export interface MemberReport {
+  id: string
+  reporter_user_id: string
+  reported_user_id: string
+  community_id: string
+  category: ReportCategory
+  description: string
+  evidence_urls: string[]
+  status: ReportStatus
+  created_at: string
+  updated_at: string
+}
+
+export interface EnforcementAction {
+  id: string
+  report_id: string
+  action_type: EnforcementActionType | 'dismiss'
+  admin_id: string
+  notes: string | null
+  duration_days: number | null
+  created_at: string
+}
+
+export interface AdminReport extends MemberReport {
+  reported_user_name: string
+  reporter_user_name: string
+  community_name: string
+  report_count_against_user: number
+}
+
+export interface AdminReportDetail extends AdminReport {
+  previous_actions: EnforcementAction[]
+  reporter_profile: { full_name: string; username: string }
+  reported_profile: { full_name: string; username: string }
+}
+
+export interface EnforcementActionInput {
+  action_type: EnforcementActionType
+  notes?: string
+  duration_days?: number
+}
+
+export interface ReportHistorySummary {
+  total_reports: number
+  resolved_count: number
+  pending_count: number
+  previous_actions: EnforcementAction[]
+}

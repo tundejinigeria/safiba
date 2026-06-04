@@ -5,7 +5,7 @@ import { dynamo, TABLES } from '@/src/lib/aws/dynamodb'
 import { requireAdmin } from '@/src/lib/session'
 import { handleActionError } from '@/src/lib/admin/errors'
 import { buildPaginationParams, getNextCursor } from '@/src/lib/admin/pagination'
-import type { MissingPerson, PaginatedParams, PaginatedResult, ActionResult } from '@/src/types/admin'
+import type { MissingPerson, MissingPersonStatus, PaginatedParams, PaginatedResult, ActionResult } from '@/src/types/admin'
 
 const TABLE = TABLES.MAIN
 
@@ -39,7 +39,7 @@ export async function getMissingPersons(params: PaginatedParams = {}): Promise<P
       name: (item.last_seen_address as string) || undefined,
     },
     lastSeenDate: (item.last_seen_at || '') as string,
-    status: (item.status || 'active') as string,
+    status: (item.status || 'active') as MissingPersonStatus,
     reporterId: (item.reporter_id || '') as string,
     contactNumber: (item.contact_number || '') as string,
     createdAt: (item.created_at || item.GSI3SK || '') as string,
