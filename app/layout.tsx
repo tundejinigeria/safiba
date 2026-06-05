@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Safiba — Nigeria's Safety Intelligence Platform",
+  title: "Safiba — Nigeria's Safety Awareness Platform",
   description:
     "Real-time alerts, missing persons, SOS, and verified community safety data. Built for 200 million Nigerians.",
 };
