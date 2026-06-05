@@ -327,7 +327,7 @@ function Waitlist() {
       <div className="max-w-2xl mx-auto text-center">
         <p className="text-orange-500 text-[13px] font-semibold mb-4 uppercase tracking-wider">Early Access</p>
         <h2 className="text-[clamp(2.4rem,7vw,6rem)] font-extrabold leading-[0.88] tracking-tight text-gray-900">
-          Be first to know<br />
+          Be the first to know<br />
           <span className="text-orange-400">when we launch.</span>
         </h2>
         <p className="mt-6 text-[16px] text-gray-500 leading-relaxed max-w-lg mx-auto">
