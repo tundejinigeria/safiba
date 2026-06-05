@@ -182,7 +182,7 @@ function Solution() {
               <span className="text-gray-300">Your safety network.</span>
             </h2>
             <p className="mt-6 text-[16px] leading-relaxed text-gray-500">
-              Safiba connects you with people in your area to share real-time safety intelligence. No more relying on delayed news or unverified WhatsApp forwards.
+              Safiba connects you with people in your area to share real-time safety awareness. No more relying on delayed news or unverified WhatsApp forwards.
             </p>
             <a href="#waitlist" className="mt-8 inline-flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:gap-3 transition-all">
               Join the waitlist <ArrowRight size={14} />
