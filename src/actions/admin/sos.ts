@@ -1,6 +1,6 @@
 'use server'
 
-import { ScanCommand, GetCommand } from '@aws-sdk/lib-dynamodb'
+import { ScanCommand, GetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb'
 import { dynamo, TABLES } from '@/src/lib/aws/dynamodb'
 import { requireAdmin } from '@/src/lib/session'
 import type { SOSEvent, PaginatedResult } from '@/src/types/admin'
@@ -80,5 +80,93 @@ export async function getSOSEvent(eventId: string): Promise<SOSEvent | null> {
     triggeredAt: item.triggered_at || item.created_at || '',
     resolvedAt: item.resolved_at || undefined,
     cancelledAt: item.cancelled_at || undefined,
+  }
+}
+
+
+// ── GET SOS CONTACTS ─────────────────────────────────────────────────────────
+
+export interface SOSContact {
+  id: string
+  name: string
+  phone: string
+  relationship: string
+  isPrimary: boolean
+  isOnSafiba: boolean
+  linkedUserId?: string
+}
+
+export async function getSOSContacts(userId: string): Promise<SOSContact[]> {
+  const admin = await requireAdmin()
+  if (!admin) throw new Error('Unauthorized')
+
+  // Fetch user's emergency contacts
+  const result = await dynamo.send(new QueryCommand({
+    TableName: TABLE,
+    KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+    ExpressionAttributeValues: {
+      ':pk': `USER#${userId}`,
+      ':sk': 'CONTACT#',
+    },
+  }))
+
+  const contacts: SOSContact[] = (result.Items || []).map((item: any) => ({
+    id: item.id || '',
+    name: item.name || 'Unknown',
+    phone: item.phone_number || '',
+    relationship: item.relationship || '',
+    isPrimary: item.is_primary || false,
+    isOnSafiba: !!item.linked_user_id,
+    linkedUserId: item.linked_user_id || undefined,
+  }))
+
+  return contacts
+}
+
+// ── GET SOS LIVE LOCATION ────────────────────────────────────────────────────
+
+export interface SOSLiveLocation {
+  sessionId: string
+  lat: number | null
+  lng: number | null
+  lastUpdated: string | null
+  shareUrl: string | null
+  status: string
+  expiresAt: string | null
+}
+
+export async function getSOSLiveLocation(userId: string): Promise<SOSLiveLocation | null> {
+  const admin = await requireAdmin()
+  if (!admin) throw new Error('Unauthorized')
+
+  // Find active live location session for this user
+  // Sessions are stored with GSI1PK: USER_LIVE#{userId}
+  const result = await dynamo.send(new QueryCommand({
+    TableName: TABLE,
+    IndexName: 'GSI1',
+    KeyConditionExpression: 'GSI1PK = :pk',
+    ExpressionAttributeValues: {
+      ':pk': `USER_LIVE#${userId}`,
+    },
+    ScanIndexForward: false, // newest first
+    Limit: 1,
+  }))
+
+  if (!result.Items || result.Items.length === 0) return null
+
+  const session = result.Items[0]
+
+  // Only return if still active
+  if (session.status !== 'active') return null
+  if (session.expires_at && new Date(session.expires_at) < new Date()) return null
+
+  return {
+    sessionId: session.id || '',
+    lat: session.last_lat || null,
+    lng: session.last_lng || null,
+    lastUpdated: session.last_updated || null,
+    shareUrl: session.share_url || null,
+    status: session.status || 'unknown',
+    expiresAt: session.expires_at || null,
   }
 }
