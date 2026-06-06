@@ -46,7 +46,7 @@ export interface AdminUser {
 
 export type AlertSeverity = 'low' | 'medium' | 'high' | 'critical'
 export type AlertStatus = 'unverified' | 'community_confirmed' | 'official_confirmed' | 'false_report' | 'resolved'
-export type AlertCategory = 'suspicious' | 'theft' | 'assault' | 'fire' | 'accident' | 'other'
+export type AlertCategory = 'suspicious' | 'theft' | 'assault' | 'kidnapping' | 'fire' | 'accident' | 'other'
 
 export interface Alert {
   id: string

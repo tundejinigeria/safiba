@@ -110,15 +110,44 @@ export async function getSOSContacts(userId: string): Promise<SOSContact[]> {
     },
   }))
 
-  const contacts: SOSContact[] = (result.Items || []).map((item: any) => ({
-    id: item.id || '',
-    name: item.name || 'Unknown',
-    phone: item.phone_number || '',
-    relationship: item.relationship || '',
-    isPrimary: item.is_primary || false,
-    isOnSafiba: !!item.linked_user_id,
-    linkedUserId: item.linked_user_id || undefined,
-  }))
+  const contacts: SOSContact[] = []
+
+  for (const item of (result.Items || [])) {
+    let isOnSafiba = !!item.linked_user_id
+    let linkedUserId = item.linked_user_id || undefined
+
+    // If not already linked, do a real-time GSI1 phone lookup
+    if (!isOnSafiba && item.phone_number) {
+      try {
+        const phoneResult = await dynamo.send(new QueryCommand({
+          TableName: TABLE,
+          IndexName: 'GSI1',
+          KeyConditionExpression: 'GSI1PK = :gsi1pk AND GSI1SK = :gsi1sk',
+          ExpressionAttributeValues: {
+            ':gsi1pk': `PHONE#${item.phone_number}`,
+            ':gsi1sk': 'PROFILE',
+          },
+        }))
+        if (phoneResult.Items && phoneResult.Items.length > 0) {
+          const matchedUserId = (phoneResult.Items[0].PK as string).replace('USER#', '')
+          if (matchedUserId !== userId) {
+            isOnSafiba = true
+            linkedUserId = matchedUserId
+          }
+        }
+      } catch {}
+    }
+
+    contacts.push({
+      id: item.id || '',
+      name: item.name || 'Unknown',
+      phone: item.phone_number || '',
+      relationship: item.relationship || '',
+      isPrimary: item.is_primary || false,
+      isOnSafiba,
+      linkedUserId,
+    })
+  }
 
   return contacts
 }
