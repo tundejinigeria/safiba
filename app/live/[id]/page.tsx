@@ -125,10 +125,10 @@ export default function LiveLocationPage({ params }: { params: { id: string } })
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-10">
         {location?.lat && location?.lng ? (
           <div className="text-center w-full max-w-sm">
-            {/* Map embed */}
+            {/* Map embed with marker */}
             <div className="w-full aspect-square bg-white border border-neutral-200 rounded-xl overflow-hidden mb-6 shadow-sm">
               <iframe
-                src={`https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1000!2d${location.lng}!3d${location.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sng!4v1`}
+                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBaWaiYS0GiSoaflQ78EFhMtO-lKOyRJ6g&q=${location.lat},${location.lng}&zoom=16`}
                 className="w-full h-full border-0"
                 loading="lazy"
                 allowFullScreen
