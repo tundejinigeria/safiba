@@ -365,12 +365,16 @@ function Footer() {
           </p>
         </div>
 
-        {/* Address + socials */}
+        {/* Address + phone + socials */}
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-10">
           <div className="flex items-center gap-2 text-[13px] text-gray-500">
             <MapPin size={13} className="shrink-0" />
-            <span>Lane D, Jeje Apete, Ibadan, Oyo State, Nigeria</span>
+            <span>No 40, Lane D, Jeje Apete, Ibadan, Oyo State, Nigeria</span>
           </div>
+          <a href="tel:09066535939" className="flex items-center gap-2 text-[13px] text-gray-500 hover:text-orange-400 transition-colors">
+            <Smartphone size={13} className="shrink-0" />
+            <span>09066535939</span>
+          </a>
           <div className="flex items-center gap-6">
             <a href="#" className="text-[13px] text-gray-500 hover:text-orange-400 transition-colors">Twitter</a>
             <a href="#" className="text-[13px] text-gray-500 hover:text-orange-400 transition-colors">Instagram</a>
