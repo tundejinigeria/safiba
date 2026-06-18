@@ -35,6 +35,7 @@ export default async function SOSPage({
   const resolvedCount = result.items.filter(e => e.status === 'resolved').length;
   const cancelledCount = result.items.filter(e => e.status === 'cancelled').length;
   const totalContacts = result.items.reduce((sum, e) => sum + e.contactsNotified, 0);
+  const totalCommunities = result.items.reduce((sum, e) => sum + e.communitiesNotified, 0);
 
   return (
     <div className="px-4 py-6 sm:px-6 sm:py-8 max-w-6xl mx-auto">
@@ -54,7 +55,7 @@ export default async function SOSPage({
       )}
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
         <div className="border border-rose-100 bg-rose-50/50 px-4 py-3">
           <p className="text-lg font-semibold text-rose-700">{activeCount}</p>
           <p className="text-xs text-rose-600">Active</p>
@@ -70,6 +71,10 @@ export default async function SOSPage({
         <div className="border border-indigo-100 bg-indigo-50/50 px-4 py-3">
           <p className="text-lg font-semibold text-indigo-700">{totalContacts}</p>
           <p className="text-xs text-indigo-600">Contacts Notified</p>
+        </div>
+        <div className="border border-violet-100 bg-violet-50/50 px-4 py-3">
+          <p className="text-lg font-semibold text-violet-700">{totalCommunities}</p>
+          <p className="text-xs text-violet-600">Communities Alerted</p>
         </div>
       </div>
 
@@ -91,6 +96,7 @@ export default async function SOSPage({
                 <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase">Status</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase hidden sm:table-cell">Location</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase hidden md:table-cell">Contacts</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase hidden md:table-cell">Communities</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase hidden md:table-cell">Duration</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase">Triggered</th>
                 <th className="px-4 py-3"></th>
@@ -107,6 +113,7 @@ export default async function SOSPage({
                     {event.location?.address || (event.location ? `${event.location.latitude.toFixed(3)}, ${event.location.longitude.toFixed(3)}` : '—')}
                   </td>
                   <td className="px-4 py-3 hidden md:table-cell text-neutral-600">{event.contactsNotified}</td>
+                  <td className="px-4 py-3 hidden md:table-cell text-neutral-600">{event.communitiesNotified}</td>
                   <td className="px-4 py-3 hidden md:table-cell text-neutral-500 text-xs">
                     <span className="inline-flex items-center gap-1">
                       <Clock size={10} />

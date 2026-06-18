@@ -1,16 +1,18 @@
 import Link from 'next/link';
-import { ArrowLeft, AlertTriangle, Users, Shield } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Users, Shield, CreditCard } from 'lucide-react';
 import { getUser, getUserAlerts, getUserCommunities } from '@/src/actions/admin/users';
+import { getUserSubscriptions } from '@/src/actions/admin/payments';
 import { StatusBadge } from '@/src/components/admin/StatusBadge';
 import { TrustScoreBar } from '@/src/components/admin/TrustScoreBar';
 import { UserActions } from './UserActions';
 
 export default async function UserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [user, alerts, communities] = await Promise.all([
+  const [user, alerts, communities, subscriptions] = await Promise.all([
     getUser(id),
     getUserAlerts(id),
     getUserCommunities(id),
+    getUserSubscriptions(id),
   ]);
 
   if (!user) {
@@ -61,6 +63,16 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
             <p className="text-sm text-neutral-900 mt-1 capitalize">{user.role}</p>
           </div>
           <div>
+            <p className="text-xs text-neutral-500 uppercase tracking-wider">Account Tier</p>
+            <span className={`inline-flex items-center px-2 py-0.5 mt-1 text-xs font-medium capitalize ${
+              user.tier === 'premium'
+                ? 'bg-indigo-50 text-indigo-700'
+                : 'bg-neutral-100 text-neutral-600'
+            }`}>
+              {user.tier}
+            </span>
+          </div>
+          <div>
             <p className="text-xs text-neutral-500 uppercase tracking-wider">Joined</p>
             <p className="text-sm text-neutral-900 mt-1">
               {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
@@ -98,6 +110,36 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
           </div>
         ) : (
           <p className="px-5 py-6 text-sm text-neutral-400 text-center">No alerts posted</p>
+        )}
+      </div>
+
+      {/* Subscriptions */}
+      <div className="border border-neutral-200 bg-white mb-6">
+        <div className="px-5 py-4 border-b border-neutral-200 flex items-center gap-2">
+          <CreditCard size={14} className="text-emerald-500" />
+          <h2 className="text-sm font-medium text-neutral-900">Subscriptions ({subscriptions.length})</h2>
+        </div>
+        {subscriptions.length > 0 ? (
+          <div className="divide-y divide-neutral-100">
+            {subscriptions.map((sub) => (
+              <div key={sub.id} className="px-5 py-3 flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-neutral-700">{sub.plan_name || sub.plan_id}</p>
+                  <p className="text-xs text-neutral-500 capitalize">
+                    {sub.billing_cycle} · ₦{sub.amount.toLocaleString()} · Community: {sub.community_id || '—'}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <StatusBadge status={sub.status} />
+                  <p className="text-xs text-neutral-400">
+                    {sub.next_payment_date ? `Next: ${new Date(sub.next_payment_date).toLocaleDateString()}` : '—'}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="px-5 py-6 text-sm text-neutral-400 text-center">No subscriptions</p>
         )}
       </div>
 

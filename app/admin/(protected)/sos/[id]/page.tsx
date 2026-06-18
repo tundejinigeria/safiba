@@ -257,6 +257,14 @@ export default async function SOSDetailPage({ params }: { params: Promise<{ id: 
               </div>
             </div>
           )}
+          {event.communitiesNotified > 0 && (
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-violet-500 rounded-full mt-1.5 shrink-0" />
+              <div>
+                <p className="text-sm text-neutral-700">{event.communitiesNotified} communit{event.communitiesNotified !== 1 ? 'ies' : 'y'} alerted</p>
+              </div>
+            </div>
+          )}
           {event.cancelledAt && (
             <div className="flex items-start gap-3">
               <div className="w-2 h-2 bg-emerald-500 rounded-full mt-1.5 shrink-0" />

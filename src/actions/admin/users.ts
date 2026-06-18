@@ -64,6 +64,10 @@ export async function getUsers(params: PaginatedParams = {}): Promise<PaginatedR
     users = users.filter(u => u.role === filters.role)
   }
 
+  if (filters?.tier && filters.tier !== 'all') {
+    users = users.filter(u => u.tier === filters.tier)
+  }
+
   if (filters?.trustScoreMin) {
     users = users.filter(u => u.trustScore >= parseInt(filters.trustScoreMin!))
   }
@@ -237,6 +241,7 @@ function mapDynamoToUser(item: Record<string, unknown>): AdminUser {
     trustScore: (item.trust_score as number) ?? 50,
     role: (item.role || 'user') as UserRole,
     status: (item.account_status || 'active') as UserStatus,
+    tier: (item.account_tier || 'free') as 'free' | 'premium',
     createdAt: (item.created_at || item.GSI3SK || '') as string,
     profilePhoto: (item.avatar_url as string | undefined),
   }

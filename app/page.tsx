@@ -355,18 +355,35 @@ function Waitlist() {
 
 function Footer() {
   return (
-    <footer className="bg-gray-50 border-t border-gray-100 px-6 py-10 sm:px-12">
-      <div className="max-w-5xl mx-auto flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2.5">
-          <Image src="/safiba-logo.svg" alt="Safiba" width={20} height={23} className="h-5 w-auto opacity-60" />
-          <span className="text-[13px] text-gray-400">Nigeria&apos;s Community-Powered Safety Platform</span>
+    <footer className="bg-gray-900 px-6 py-14 sm:px-12 sm:py-16">
+      <div className="max-w-5xl mx-auto flex flex-col items-center gap-8">
+        {/* Logo + tagline */}
+        <div className="flex flex-col items-center gap-3">
+          <Image src="/safiba-logo.svg" alt="Safiba" width={28} height={32} className="h-7 w-auto brightness-0 invert" />
+          <p className="text-[14px] text-gray-400 text-center">
+            Nigeria&apos;s Community-Powered Safety Platform
+          </p>
         </div>
-        <div className="flex items-center gap-7">
-          <a href="#" className="text-[13px] text-gray-400 hover:text-gray-900 transition-colors">Twitter</a>
-          <a href="#" className="text-[13px] text-gray-400 hover:text-gray-900 transition-colors">Instagram</a>
-          <a href="#" className="text-[13px] text-gray-400 hover:text-gray-900 transition-colors">Contact</a>
+
+        {/* Address + socials */}
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-10">
+          <div className="flex items-center gap-2 text-[13px] text-gray-500">
+            <MapPin size={13} className="shrink-0" />
+            <span>Lane D, Jeje Apete, Ibadan, Oyo State, Nigeria</span>
+          </div>
+          <div className="flex items-center gap-6">
+            <a href="#" className="text-[13px] text-gray-500 hover:text-orange-400 transition-colors">Twitter</a>
+            <a href="#" className="text-[13px] text-gray-500 hover:text-orange-400 transition-colors">Instagram</a>
+            <a href="#" className="text-[13px] text-gray-500 hover:text-orange-400 transition-colors">Contact</a>
+          </div>
         </div>
-        <p className="text-[13px] text-gray-300">© {new Date().getFullYear()} Safiba. All rights reserved.</p>
+
+        {/* Divider + copyright */}
+        <div className="w-full max-w-xs border-t border-gray-700 pt-6">
+          <p className="text-[12px] text-gray-600 text-center">
+            © {new Date().getFullYear()} Safiba. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
   );

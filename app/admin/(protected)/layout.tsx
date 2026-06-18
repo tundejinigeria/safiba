@@ -10,6 +10,9 @@ import {
   Globe,
   Siren,
   ShieldAlert,
+  CreditCard,
+  Flag,
+  Tag,
   LogOut,
 } from 'lucide-react';
 import { requireAdmin } from '@/src/lib/session';
@@ -23,7 +26,10 @@ const navLinks = [
   { href: '/admin/communities', label: 'Communities', icon: Globe, iconColor: 'text-violet-500' },
   { href: '/admin/missing-persons', label: 'Missing Persons', icon: Search, iconColor: 'text-amber-500' },
   { href: '/admin/sos', label: 'SOS Events', icon: Siren, iconColor: 'text-rose-500' },
-  { href: '/admin/moderation', label: 'Moderation', icon: ShieldAlert, iconColor: 'text-orange-500' },
+  { href: '/admin/reports', label: 'Reports', icon: Flag, iconColor: 'text-orange-500' },
+  { href: '/admin/payments', label: 'Payments', icon: CreditCard, iconColor: 'text-emerald-500' },
+  { href: '/admin/pricing', label: 'Pricing', icon: Tag, iconColor: 'text-teal-500' },
+  { href: '/admin/moderation', label: 'Moderation', icon: ShieldAlert, iconColor: 'text-neutral-500' },
 ];
 
 export default async function AdminLayout({

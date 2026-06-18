@@ -8,7 +8,7 @@ import { EmptyState } from '@/src/components/admin/EmptyState';
 export default async function UsersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ cursor?: string; search?: string; status?: string; role?: string }>
+  searchParams: Promise<{ cursor?: string; search?: string; status?: string; role?: string; tier?: string }>
 }) {
   const params = await searchParams;
   const result = await getUsers({
@@ -18,6 +18,7 @@ export default async function UsersPage({
       search: params.search || '',
       status: params.status || 'all',
       role: params.role || 'all',
+      tier: params.tier || 'all',
     },
   });
 
@@ -90,6 +91,15 @@ export default async function UsersPage({
           <option value="community_leader">Community Leader</option>
           <option value="admin">Admin</option>
         </select>
+        <select
+          name="tier"
+          defaultValue={params.tier || 'all'}
+          className="px-3 py-2 text-sm border border-neutral-200 bg-white focus:outline-none focus:border-neutral-400"
+        >
+          <option value="all">All tiers</option>
+          <option value="free">Free</option>
+          <option value="premium">Premium</option>
+        </select>
         <button
           type="submit"
           className="px-4 py-2 text-sm bg-neutral-900 text-white hover:bg-neutral-700 transition-colors"
@@ -108,6 +118,7 @@ export default async function UsersPage({
                 <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider hidden sm:table-cell">Phone</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider">Trust Score</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider hidden md:table-cell">Role</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider hidden md:table-cell">Tier</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider hidden md:table-cell">Status</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-neutral-500 uppercase tracking-wider hidden lg:table-cell">Joined</th>
                 <th className="px-4 py-3"></th>
@@ -128,6 +139,15 @@ export default async function UsersPage({
                   </td>
                   <td className="px-4 py-3 hidden md:table-cell">
                     <span className="text-xs text-neutral-600 capitalize">{user.role.replace('_', ' ')}</span>
+                  </td>
+                  <td className="px-4 py-3 hidden md:table-cell">
+                    <span className={`inline-flex items-center px-2 py-0.5 text-xs font-medium capitalize ${
+                      user.tier === 'premium'
+                        ? 'bg-indigo-50 text-indigo-700'
+                        : 'bg-neutral-100 text-neutral-600'
+                    }`}>
+                      {user.tier}
+                    </span>
                   </td>
                   <td className="px-4 py-3 hidden md:table-cell">
                     <StatusBadge status={user.status} />
@@ -152,7 +172,7 @@ export default async function UsersPage({
           {result.nextCursor && (
             <div className="px-4 py-3 border-t border-neutral-200 flex justify-end">
               <Link
-                href={`/admin/users?cursor=${result.nextCursor}${params.search ? `&search=${params.search}` : ''}${params.status && params.status !== 'all' ? `&status=${params.status}` : ''}${params.role && params.role !== 'all' ? `&role=${params.role}` : ''}`}
+                href={`/admin/users?cursor=${result.nextCursor}${params.search ? `&search=${params.search}` : ''}${params.status && params.status !== 'all' ? `&status=${params.status}` : ''}${params.role && params.role !== 'all' ? `&role=${params.role}` : ''}${params.tier && params.tier !== 'all' ? `&tier=${params.tier}` : ''}`}
                 className="text-xs text-neutral-600 border border-neutral-200 px-3 py-1.5 hover:bg-neutral-50 transition-colors"
               >
                 Next page →

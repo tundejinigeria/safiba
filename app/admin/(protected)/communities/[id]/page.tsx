@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { ArrowLeft, Users } from 'lucide-react';
+import { ArrowLeft, Users, CreditCard } from 'lucide-react';
 import { getCommunity, getCommunityMembers } from '@/src/actions/admin/communities';
+import { getCommunitySubscription } from '@/src/actions/admin/payments';
 import { StatusBadge } from '@/src/components/admin/StatusBadge';
 import { CommunityActions } from './CommunityActions';
 
@@ -16,9 +17,10 @@ interface CommunityMember {
 
 export default async function CommunityDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [community, members] = await Promise.all([
+  const [community, members, subscription] = await Promise.all([
     getCommunity(id),
     getCommunityMembers(id),
+    getCommunitySubscription(id),
   ]);
 
   if (!community) {
@@ -72,6 +74,50 @@ export default async function CommunityDetailPage({ params }: { params: Promise<
 
       {/* Admin Actions */}
       <CommunityActions communityId={community.id} verified={community.verified} memberCount={community.memberCount} />
+
+      {/* Subscription Info */}
+      <div className="border border-neutral-200 bg-white mt-6">
+        <div className="px-5 py-4 border-b border-neutral-200 flex items-center gap-2">
+          <CreditCard size={14} className="text-emerald-500" />
+          <h2 className="text-sm font-medium text-neutral-900">Subscription</h2>
+        </div>
+        {subscription ? (
+          <div className="px-5 py-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div>
+                <p className="text-xs text-neutral-500 uppercase tracking-wider">Plan</p>
+                <p className="text-sm text-neutral-900 mt-1">{subscription.plan_name || subscription.plan_id}</p>
+              </div>
+              <div>
+                <p className="text-xs text-neutral-500 uppercase tracking-wider">Status</p>
+                <div className="mt-1">
+                  <StatusBadge status={subscription.status} />
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-neutral-500 uppercase tracking-wider">Billing Cycle</p>
+                <p className="text-sm text-neutral-900 mt-1 capitalize">{subscription.billing_cycle}</p>
+              </div>
+              <div>
+                <p className="text-xs text-neutral-500 uppercase tracking-wider">Member Cap</p>
+                <p className="text-sm text-neutral-900 mt-1">{community.memberCount} / {subscription.member_cap}</p>
+              </div>
+              <div>
+                <p className="text-xs text-neutral-500 uppercase tracking-wider">Amount</p>
+                <p className="text-sm text-neutral-900 mt-1">₦{subscription.amount.toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="text-xs text-neutral-500 uppercase tracking-wider">Owner</p>
+                <Link href={`/admin/users/${subscription.user_id}`} className="text-sm text-blue-600 hover:text-blue-800 mt-1 inline-block">
+                  View owner →
+                </Link>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="px-5 py-6 text-sm text-neutral-400 text-center">No subscription linked to this community</p>
+        )}
+      </div>
 
       {/* Members List */}
       <div className="border border-neutral-200 bg-white mt-6">

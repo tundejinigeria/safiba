@@ -29,6 +29,8 @@ export type TrustScoreLevel = 'low' | 'medium' | 'high'
 export type UserStatus = 'active' | 'suspended' | 'banned'
 export type UserRole = 'user' | 'community_leader' | 'admin'
 
+export type AccountTier = 'free' | 'premium'
+
 export interface AdminUser {
   id: string
   name: string
@@ -38,6 +40,7 @@ export interface AdminUser {
   trustScore: number
   role: UserRole
   status: UserStatus
+  tier: AccountTier
   createdAt: string
   profilePhoto?: string
 }
@@ -130,6 +133,7 @@ export interface SOSEvent {
     address?: string
   }
   contactsNotified: number
+  communitiesNotified: number
   triggeredAt: string
   resolvedAt?: string
   cancelledAt?: string

@@ -185,7 +185,11 @@ export default async function AdminDashboard() {
           { href: '/admin/users', label: 'Manage Users', icon: Users, color: 'text-indigo-500', border: 'border-indigo-200' },
           { href: '/admin/incidents', label: 'Review Incidents', icon: AlertTriangle, color: 'text-red-500', border: 'border-red-200' },
           { href: '/admin/communities', label: 'Communities', icon: Globe, color: 'text-violet-500', border: 'border-violet-200' },
+          { href: '/admin/sos', label: 'SOS Events', icon: Siren, color: 'text-rose-500', border: 'border-rose-200' },
+          { href: '/admin/reports', label: 'Member Reports', icon: ShieldAlert, color: 'text-orange-500', border: 'border-orange-200' },
+          { href: '/admin/payments', label: 'Payments', icon: TrendingUp, color: 'text-emerald-500', border: 'border-emerald-200' },
           { href: '/admin/missing-persons', label: 'Missing Persons', icon: Search, color: 'text-amber-500', border: 'border-amber-200' },
+          { href: '/admin/moderation', label: 'Moderation', icon: ShieldAlert, color: 'text-neutral-500', border: 'border-neutral-200' },
         ].map(({ href, label, icon: Icon, color, border }) => (
           <Link
             key={href}
