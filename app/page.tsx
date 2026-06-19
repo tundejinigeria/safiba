@@ -375,10 +375,14 @@ function Footer() {
             <Smartphone size={13} className="shrink-0" />
             <span>09066535939</span>
           </a>
+          <a href="mailto:support@safiba.com" className="text-[13px] text-gray-500 hover:text-orange-400 transition-colors">
+            support@safiba.com
+          </a>
           <div className="flex items-center gap-6">
             <a href="#" className="text-[13px] text-gray-500 hover:text-orange-400 transition-colors">Twitter</a>
             <a href="#" className="text-[13px] text-gray-500 hover:text-orange-400 transition-colors">Instagram</a>
             <a href="#" className="text-[13px] text-gray-500 hover:text-orange-400 transition-colors">Contact</a>
+            <a href="/legal" className="text-[13px] text-gray-500 hover:text-orange-400 transition-colors">Legal</a>
           </div>
         </div>
 
