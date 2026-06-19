@@ -399,9 +399,49 @@ function Footer() {
 
 /*  Page  */
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Safiba",
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Android, iOS",
+  description:
+    "Nigeria's community-powered safety platform. Real-time safety alerts, missing persons reports, SOS emergency features, and verified community safety data.",
+  url: "https://safiba.com",
+  author: {
+    "@type": "Organization",
+    name: "Tundeji Technologies Ltd",
+    url: "https://safiba.com",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "No 40, Lane D, Jeje Apete",
+      addressLocality: "Ibadan",
+      addressRegion: "Oyo State",
+      addressCountry: "NG",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+234-906-653-5939",
+      email: "support@safiba.com",
+      contactType: "customer support",
+      availableLanguage: "English",
+    },
+  },
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "NGN",
+    description: "Free for individual users",
+  },
+};
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Nav />
       <main>
         <Hero />
